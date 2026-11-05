@@ -1,5 +1,10 @@
 # Canvis
 
+## 1.1.2 · 2026-11-05
+
+- Favicon amb fons blanc per mantenir el contrast en pestanyes fosques.
+- Tipografia més lleugera i peu compacte amb el lema, el logotip d’ortogra.fi centrat, el número de versió i la icona de commit.
+
 ## 1.1.1 · 2026-11-05
 
 - Publicació a pauta.ortogra.fi amb GitHub Pages.

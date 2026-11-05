@@ -6,7 +6,7 @@
   <meta name="description" content="Crea i imprimeix paper pautat amb marges a mida, pautes de cal·ligrafia i un codi curt per recuperar la configuració.">
   <meta name="theme-color" content="#f6f5f1">
   <title>Pauta. · Paper pautat per imprimir</title>
-  <link rel="icon" type="image/svg+xml" href="./pauta.svg">
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link rel="stylesheet" href="./style.css">
   <style id="print-size">@page { size: A4 portrait; margin: 0; }</style>
   <script src="./icons.js" defer></script>
@@ -171,12 +171,19 @@
     </main>
 
     <footer class="site-footer">
-      <a class="family-link" href="https://ortogra.fi/"><span>ortogra<span class="brand-period">.</span>fi</span></a>
+      <p class="footer-motto" data-i18n="footerMotto">Paper pautat per a l’aula, sense complicacions.</p>
+      <div class="footer-credit">
+        <span data-i18n="footerCredit">Un projecte d’</span>
+        <a class="family-link" href="https://ortogra.fi/">
+          <img src="./ortogra-symbol.svg" width="14" height="14" alt="">
+          <span>ortogra<span class="brand-period">.</span>fi</span>
+        </a>
+      </div>
       <nav class="footer-tools" data-aria="project">
-        <button type="button" class="button quiet" data-dialog="changelog"><span data-icon="history"></span><span data-i18n="changelog">Canvis</span></button>
-        <button type="button" class="button quiet" data-dialog="license"><span data-icon="book-open"></span><span data-i18n="license">Llicència</span></button>
-        <a class="button quiet repo-link" href="https://github.com/aaronFortuno/pauta" target="_blank" rel="noopener noreferrer"><span data-icon="external-link"></span><span data-i18n="repo">Repositori</span></a>
-        <button type="button" class="button quiet" data-dialog="v4v"><span data-icon="heart"></span><span>V4V</span></button>
+        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.1.2</button>
+        <button type="button" class="button quiet" data-dialog="license" data-aria="license" data-title="license"><span data-icon="book-open"></span><span class="footer-label" data-i18n="license">Llicència</span></button>
+        <a class="button quiet" href="https://github.com/aaronFortuno/pauta" target="_blank" rel="noopener noreferrer" data-aria="repo" data-title="repo"><span data-icon="git-commit-horizontal"></span><span class="footer-label" data-i18n="repo">Repositori</span></a>
+        <button type="button" class="button quiet" data-dialog="v4v" aria-label="Value for Value" title="Value for Value"><span data-icon="heart"></span><span class="footer-label">V4V</span></button>
       </nav>
     </footer>
   </div>
@@ -193,7 +200,9 @@
   <dialog id="changelog" aria-labelledby="changelog-title">
     <div class="dialog-heading"><h2 id="changelog-title" data-i18n="changelog">Canvis</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
     <div class="dialog-content">
-      <div class="release"><strong>1.1.1</strong><time datetime="2026-11-05"></time></div>
+      <div class="release"><strong>1.1.2</strong><time datetime="2026-11-05"></time></div>
+      <p data-i18n="release112">Tipografia més lleugera, peu compacte i favicon amb fons blanc.</p>
+      <div class="release previous-release"><strong>1.1.1</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release111">Pauta arriba a pauta.ortogra.fi amb un avís animat per descobrir Pentagrama.</p>
       <div class="release previous-release"><strong>1.1.0</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release110">Quatre plantilles, formats A4 i A5 amb les dues orientacions, línies discontínues i color de tinta ajustable.</p>
