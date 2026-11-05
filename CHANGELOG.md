@@ -1,5 +1,10 @@
 # Canvis
 
+## 1.1.1 · 2026-11-05
+
+- Publicació a pauta.ortogra.fi amb GitHub Pages.
+- Avís flotant de Pentagrama amb entrada i sortida animades, temporitzador visible i pausa amb el punter o el focus.
+
 ## 1.1.0 · 2026-11-05
 
 - Plantilles simple ampla (12 mm), simple estreta (6 mm), doble per a cicle mitjà i quàdruple per a infantil i cicle inicial.

@@ -236,15 +236,5 @@
   for (const button of $$('[data-close]')) {
     button.addEventListener('click', () => button.closest('dialog').close());
   }
-  const promo = $('#project-promo');
-  const promoKey = 'pauta-pentagrama-promo';
-  let promoDismissed = false;
-  try { promoDismissed = localStorage.getItem(promoKey) === promo.dataset.until; } catch {}
-  promo.hidden = promoDismissed || !(Date.now() < Date.parse(promo.dataset.until));
-  $('#close-promo').addEventListener('click', () => {
-    promo.hidden = true;
-    try { localStorage.setItem(promoKey, promo.dataset.until); } catch {}
-    stage.focus({ preventScroll: true });
-  });
   setLanguage(readLanguage());
 })();

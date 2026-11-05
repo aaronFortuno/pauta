@@ -13,6 +13,7 @@
   <script src="./i18n.js" defer></script>
   <script src="./layout.js" defer></script>
   <script src="./app.js" defer></script>
+  <script src="./promo.js" defer></script>
 </head>
 <body>
   <div class="app-shell">
@@ -166,13 +167,6 @@
           </div>
         </div>
         <div class="preview-foot"><span id="paper-format">A4 · Vertical</span><span id="paper-dimensions">210 × 297 mm</span></div>
-        <aside class="project-promo" id="project-promo" data-until="2026-12-06T00:00:00+01:00" hidden>
-          <a href="https://pentagrama.page/" target="_blank" rel="noopener noreferrer">
-            <span><strong>Pentagrama<span class="brand-period">.</span></strong><span class="promo-text" data-i18n="pentagramaPromo">Paper de pentagrama a mida</span></span>
-            <span data-icon="external-link"></span>
-          </a>
-          <button id="close-promo" class="button quiet icon-only" type="button" data-aria="close"><span data-icon="x"></span></button>
-        </aside>
       </section>
     </main>
 
@@ -187,10 +181,21 @@
     </footer>
   </div>
 
+  <aside class="project-promo" id="project-promo" data-aria="pentagramaPromo" hidden>
+    <a href="https://pentagrama.page/" target="_blank" rel="noopener noreferrer">
+      <span><strong>Pentagrama<span class="brand-period">.</span></strong><span class="promo-text" data-i18n="pentagramaPromo">Paper de pentagrama a mida</span></span>
+      <span data-icon="external-link"></span>
+    </a>
+    <button id="close-promo" class="button quiet icon-only" type="button" data-aria="close"><span data-icon="x"></span></button>
+    <span class="promo-progress" aria-hidden="true"></span>
+  </aside>
+
   <dialog id="changelog" aria-labelledby="changelog-title">
     <div class="dialog-heading"><h2 id="changelog-title" data-i18n="changelog">Canvis</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
     <div class="dialog-content">
-      <div class="release"><strong>1.1.0</strong><time datetime="2026-11-05"></time></div>
+      <div class="release"><strong>1.1.1</strong><time datetime="2026-11-05"></time></div>
+      <p data-i18n="release111">Pauta arriba a pauta.ortogra.fi amb un avís animat per descobrir Pentagrama.</p>
+      <div class="release previous-release"><strong>1.1.0</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release110">Quatre plantilles, formats A4 i A5 amb les dues orientacions, línies discontínues i color de tinta ajustable.</p>
       <div class="release previous-release"><strong>1.0.0</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release">Pauta simple i de cal·ligrafia, marges configurables i codi curt per recuperar un full. Previsualització amb zoom i exportació en PDF.</p>

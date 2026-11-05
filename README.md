@@ -9,6 +9,6 @@ Generador de paper pautat A4 i A5 per escriure i practicar cal·ligrafia. Obre `
 - Codi `P2` opcional al peu. Introdueix-lo al quadre **Codi del full** per recuperar la configuració del paper. També s’accepten els codis `P1`.
 - Previsualització amb zoom. Imprimeix al 100 % per conservar les mesures del PDF.
 
-El domini previst és `pauta.ortogra.fi`. Per publicar el web, serveix el contingut de `dist/`. L’avís de Pentagrama es pot tancar i caduca en la data indicada a `data-until` de `dist/index.html`.
+El web és a [pauta.ortogra.fi](https://pauta.ortogra.fi/). GitHub Pages publica `dist/` amb el flux de GitHub Actions quan canvia el web a `main`. L’avís de Pentagrama es mostra un segon després de carregar la pàgina i s’amaga al cap de dotze segons. El temporitzador es pausa quan el punter o el focus són dins l’avís.
 
 Projecte amb llicència [GNU GPL-3.0](LICENSE). Les [icones Lucide](https://lucide.dev/) es distribueixen sota les seves [llicències ISC i MIT](dist/lucide-LICENSE.txt).
