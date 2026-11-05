@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Crea i imprimeix paper pautat amb marges a mida, pautes de cal·ligrafia i un codi curt per recuperar la configuració.">
+  <meta name="theme-color" content="#f6f5f1">
+  <title>Pauta. · Paper pautat per imprimir</title>
+  <link rel="icon" type="image/svg+xml" href="./pauta.svg">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./icons.js" defer></script>
+  <script src="./i18n.js" defer></script>
+  <script src="./layout.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="site-header">
+      <div class="brand">
+        <img src="./pauta.svg" width="34" height="34" alt="">
+        <span>Pauta<span class="brand-period">.</span></span>
+      </div>
+      <div class="header-intro">
+        <h1 data-i18n="title">Paper pautat per imprimir</h1>
+        <p data-i18n="intro">Crea fulls per escriure i practicar cal·ligrafia.</p>
+      </div>
+      <details class="language-control" id="language-control">
+        <summary class="button quiet" data-aria="language" aria-label="Idioma">
+          <span data-icon="languages"></span><span id="current-language">CA</span><span data-icon="chevron-down"></span>
+        </summary>
+        <div class="language-menu" id="language-menu"></div>
+      </details>
+    </header>
+
+    <main class="workspace">
+      <aside class="panel settings" aria-labelledby="settings-title">
+        <div class="panel-heading">
+          <h2 id="settings-title" data-i18n="settings">Ajustos del full</h2>
+          <button id="reset" class="button quiet icon-only" type="button" data-aria="reset" data-title="reset"><span data-icon="rotate-ccw"></span></button>
+        </div>
+        <div class="settings-scroll">
+          <details class="settings-section" open>
+            <summary><span data-icon="settings-2"></span><span data-i18n="ruling">Pauta</span><span class="disclosure" data-icon="chevron-down"></span></summary>
+            <div class="section-content">
+              <fieldset class="type">
+                <legend data-i18n="type">Tipus de pauta</legend>
+                <div class="type-options">
+                  <label><input type="radio" name="type" value="1" checked><span class="type-choice"><span class="type-glyph" aria-hidden="true"><i></i></span><span data-i18n="single">Simple</span></span></label>
+                  <label><input type="radio" name="type" value="2"><span class="type-choice"><span class="type-glyph" aria-hidden="true"><i></i><i></i></span><span data-i18n="double">Doble</span></span></label>
+                  <label><input type="radio" name="type" value="3"><span class="type-choice"><span class="type-glyph" aria-hidden="true"><i class="fine-rule"></i><i></i><i></i></span><span data-i18n="triple">Triple</span></span></label>
+                  <label><input type="radio" name="type" value="4"><span class="type-choice"><span class="type-glyph" aria-hidden="true"><i class="fine-rule"></i><i></i><i></i><i class="fine-rule"></i></span><span data-i18n="quad">Quàdruple</span></span></label>
+                </div>
+              </fieldset>
+              <div class="measure-row">
+                <label id="spacing-label" for="spacing-value" data-i18n="spacing">Separació entre línies</label>
+                <span class="measure"><input id="spacing-value" type="number" inputmode="decimal" data-field="spacing"><span>mm</span></span>
+                <input id="spacing" type="range" data-field="spacing" aria-labelledby="spacing-label">
+              </div>
+              <div class="measure-row">
+                <label id="weight-label" for="weight-value" data-i18n="weight">Gruix de les línies</label>
+                <span class="measure"><input id="weight-value" type="number" inputmode="decimal" data-field="weight"><span>mm</span></span>
+                <input id="weight" type="range" data-field="weight" aria-labelledby="weight-label">
+              </div>
+              <div class="advanced" id="calligraphy" hidden>
+                <div class="measure-row">
+                  <label for="body-value" data-i18n="body">Cos de les lletres</label>
+                  <span class="measure"><input id="body-value" type="number" inputmode="decimal" data-field="body"><span>mm</span></span>
+                </div>
+                <div class="measure-row" id="upper-field" hidden>
+                  <label for="upper-value" data-i18n="upper">Alçada d’ascendents</label>
+                  <span class="measure"><input id="upper-value" type="number" inputmode="decimal" data-field="upper"><span>mm</span></span>
+                </div>
+                <div class="measure-row" id="lower-field" hidden>
+                  <label for="lower-value" data-i18n="lower">Fondària de descendents</label>
+                  <span class="measure"><input id="lower-value" type="number" inputmode="decimal" data-field="lower"><span>mm</span></span>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="settings-section">
+            <summary><span data-icon="rectangle-vertical"></span><span data-i18n="margins">Marges</span><span class="disclosure" data-icon="chevron-down"></span></summary>
+            <div class="section-content">
+              <div class="margin-grid">
+                <label><span data-i18n="top">Superior</span><span class="measure"><input type="number" inputmode="numeric" data-field="top"><span>mm</span></span></label>
+                <label><span data-i18n="bottom">Inferior</span><span class="measure"><input type="number" inputmode="numeric" data-field="bottom"><span>mm</span></span></label>
+                <label><span data-i18n="left">Esquerre</span><span class="measure"><input type="number" inputmode="numeric" data-field="left"><span>mm</span></span></label>
+                <label><span data-i18n="right">Dret</span><span class="measure"><input type="number" inputmode="numeric" data-field="right"><span>mm</span></span></label>
+              </div>
+              <fieldset class="guides">
+                <legend data-i18n="guides">Línies verticals de marge</legend>
+                <label><input type="checkbox" data-field="guideLeft"><span data-i18n="leftGuide">Esquerra</span></label>
+                <label><input type="checkbox" data-field="guideRight"><span data-i18n="rightGuide">Dreta</span></label>
+              </fieldset>
+            </div>
+          </details>
+
+          <details class="settings-section">
+            <summary><span data-icon="code"></span><span data-i18n="code">Codi del full</span><span class="disclosure" data-icon="chevron-down"></span></summary>
+            <div class="section-content code-controls">
+              <p class="hint" data-i18n="codeHelp">El codi permet recuperar els ajustos d’un full imprès.</p>
+              <div class="current-code">
+                <output id="layout-code"></output>
+                <button type="button" class="button quiet icon-only" id="copy-code" data-aria="copy" data-title="copy"><span data-icon="copy"></span></button>
+              </div>
+              <label class="checkbox"><input type="checkbox" data-field="printCode"><span data-i18n="printCode">Imprimeix el codi al peu</span></label>
+              <form id="restore-form">
+                <label for="restore-code" data-i18n="restoreLabel">Recupera un full amb el seu codi</label>
+                <div class="restore-row">
+                  <input id="restore-code" type="text" placeholder="P1-…" spellcheck="false" autocomplete="off" autocapitalize="characters" maxlength="40" aria-describedby="code-status" required>
+                  <button type="submit" class="button secondary" data-i18n="restore">Recupera</button>
+                </div>
+              </form>
+              <p class="hint" id="code-status" role="status"></p>
+            </div>
+          </details>
+        </div>
+        <div class="actions">
+          <button type="button" class="button primary" id="download"><span data-icon="download"></span><span data-i18n="download">Descarrega el PDF</span></button>
+          <button type="button" class="button secondary" id="print"><span data-icon="printer"></span><span data-i18n="print">Imprimeix</span></button>
+        </div>
+      </aside>
+
+      <section class="panel preview" aria-labelledby="preview-title">
+        <div class="panel-heading preview-heading">
+          <div class="preview-caption">
+            <h2 id="preview-title" data-i18n="preview">Previsualització</h2>
+            <output id="line-count"></output>
+          </div>
+          <div class="zoom">
+            <button type="button" class="button quiet icon-only" id="zoom-out" data-aria="zoomOut" data-title="zoomOut"><span data-icon="minus"></span></button>
+            <output id="zoom-value">100 %</output>
+            <button type="button" class="button quiet icon-only" id="zoom-in" data-aria="zoomIn" data-title="zoomIn"><span data-icon="plus"></span></button>
+            <button type="button" class="button quiet icon-only zoom-fit" id="zoom-fit" data-aria="zoomFit" data-title="zoomFit"><span data-icon="fullscreen"></span></button>
+          </div>
+        </div>
+        <div class="stage" id="stage" tabindex="0" data-aria="preview">
+          <div class="canvas">
+            <svg id="sheet" viewBox="0 0 210 297" role="img" data-aria="sheet">
+              <path id="rules" fill="none"/>
+              <path id="fine" fill="none"/>
+              <path id="margins" fill="none"/>
+              <text id="sheet-code" font-family="Courier New, monospace"></text>
+            </svg>
+          </div>
+        </div>
+        <div class="preview-foot"><span data-i18n="format">A4 vertical</span><span>210 × 297 mm</span></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="family-link" href="https://ortogra.fi/"><span>ortogra<span class="brand-period">.</span>fi</span></a>
+      <nav class="footer-tools" data-aria="project">
+        <button type="button" class="button quiet" data-dialog="changelog"><span data-icon="history"></span><span data-i18n="changelog">Canvis</span></button>
+        <button type="button" class="button quiet" data-dialog="license"><span data-icon="book-open"></span><span data-i18n="license">Llicència</span></button>
+        <a class="button quiet repo-link" href="https://github.com/aaronFortuno/pauta" target="_blank" rel="noopener noreferrer"><span data-icon="external-link"></span><span data-i18n="repo">Repositori</span></a>
+        <button type="button" class="button quiet" data-dialog="v4v"><span data-icon="heart"></span><span>V4V</span></button>
+      </nav>
+    </footer>
+  </div>
+
+  <dialog id="changelog" aria-labelledby="changelog-title">
+    <div class="dialog-heading"><h2 id="changelog-title" data-i18n="changelog">Canvis</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
+    <div class="dialog-content">
+      <div class="release"><strong>1.0.0</strong><time datetime="2026-11-05" id="release-date"></time></div>
+      <p data-i18n="release">Pauta simple i de cal·ligrafia, marges configurables i codi curt per recuperar un full. Previsualització amb zoom i exportació en PDF.</p>
+    </div>
+  </dialog>
+  <dialog id="license" aria-labelledby="license-title">
+    <div class="dialog-heading"><h2 id="license-title" data-i18n="license">Llicència</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
+    <div class="dialog-content">
+      <p data-i18n="openSource">Pauta és programari lliure amb llicència GNU GPL-3.0.</p>
+      <ul>
+        <li><a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer">GNU GPL-3.0</a></li>
+        <li><a href="./lucide-LICENSE.txt" target="_blank" rel="noopener noreferrer">Lucide · ISC / MIT</a></li>
+      </ul>
+    </div>
+  </dialog>
+  <dialog id="v4v" aria-labelledby="v4v-title">
+    <div class="dialog-heading"><h2 id="v4v-title">Value for Value</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
+    <div class="dialog-content">
+      <div class="v4v-intro">
+        <a class="lightning-qr" href="lightning:LNURL1DP68GURN8GHJ7AMPD3KX2AR0VEEKZAR0WD5XJTNRDAKJ7TNHV4KXCTTTDEHHWM30D3H82UNVWQHKZUR5WDMKJMFEXQESLJTDDS" data-aria="openLightning"><img src="./lightning-qr.svg" width="112" height="112" alt=""></a>
+        <div>
+          <p data-i18n="v4v">Si Pauta et resulta útil, pots donar-hi suport amb un microdonatiu voluntari per Lightning. Compartir-la o proposar millores també ajuda.</p>
+          <strong class="lightning-label">Lightning Network</strong>
+          <div class="current-code lightning-address">
+            <code id="lightning-address">aptswim903@walletofsatoshi.com</code>
+            <button type="button" class="button quiet icon-only" id="copy-lightning" data-aria="copyLightning" data-title="copyLightning"><span data-icon="copy"></span></button>
+          </div>
+          <p class="hint" id="lightning-status" role="status"></p>
+        </div>
+      </div>
+      <div class="dialog-links">
+        <a href="https://aaronfortuno.github.io/portfolio/" target="_blank" rel="noopener noreferrer">Aarón Fortuño</a>
+        <a href="https://pentagrama.page/" target="_blank" rel="noopener noreferrer">Pentagrama</a>
+        <a href="https://ortogra.fi/" target="_blank" rel="noopener noreferrer">ortogra.fi</a>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>
