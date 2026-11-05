@@ -11,6 +11,7 @@
   let locale = 'ca';
   let zoom = 1;
   let paper;
+  let drag;
 
   function icon(name) {
     return `<svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${PautaIcons[name]}</svg>`;
@@ -33,11 +34,29 @@
 
   function updateZoom() {
     const gutter = parseFloat(getComputedStyle(stage).getPropertyValue('--gutter'));
-    const maxWidth = Math.min(stage.clientWidth - gutter * 2, (stage.clientHeight - gutter * 2) * paper.width / paper.height);
+    const { width, height } = stage.getBoundingClientRect();
+    const maxWidth = Math.min(width - gutter * 2, (height - gutter * 2) * paper.width / paper.height);
     sheet.style.setProperty('--sheet-width', Math.max(1, maxWidth * zoom) + 'px');
     $('#zoom-value').value = new Intl.NumberFormat(locale, { style: 'percent' }).format(zoom);
     $('#zoom-out').disabled = zoom <= 0.5;
     $('#zoom-in').disabled = zoom >= 3;
+    stage.toggleAttribute('data-zoomed', zoom > 1);
+  }
+
+  function setZoom(value, x, y) {
+    const next = Math.min(3, Math.max(0.5, value));
+    if (zoom === next) return;
+    const area = stage.getBoundingClientRect();
+    x ??= area.left + stage.clientWidth / 2;
+    y ??= area.top + stage.clientHeight / 2;
+    const before = sheet.getBoundingClientRect();
+    const fractionX = (x - before.left) / before.width;
+    const fractionY = (y - before.top) / before.height;
+    zoom = next;
+    updateZoom();
+    const after = sheet.getBoundingClientRect();
+    stage.scrollLeft += after.left + fractionX * after.width - x;
+    stage.scrollTop += after.top + fractionY * after.height - y;
   }
 
   function render() {
@@ -216,9 +235,33 @@
     status.textContent = '';
   });
 
-  $('#zoom-out').addEventListener('click', () => { zoom = Math.max(0.5, zoom - 0.25); updateZoom(); });
-  $('#zoom-in').addEventListener('click', () => { zoom = Math.min(3, zoom + 0.25); updateZoom(); });
-  $('#zoom-fit').addEventListener('click', () => { zoom = 1; updateZoom(); stage.scrollTo(0, 0); });
+  $('#zoom-out').addEventListener('click', () => setZoom(zoom - 0.25));
+  $('#zoom-in').addEventListener('click', () => setZoom(zoom + 0.25));
+  $('#zoom-fit').addEventListener('click', () => { setZoom(1); stage.scrollTo(0, 0); });
+  stage.addEventListener('wheel', event => {
+    if (event.shiftKey || !event.deltaY || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+    event.preventDefault();
+    const pixels = event.deltaY * [1, 16, stage.clientHeight][event.deltaMode];
+    const step = Math.min(160, Math.max(-160, pixels));
+    setZoom(zoom * Math.exp(-step * 0.002), event.clientX, event.clientY);
+  }, { passive: false });
+  stage.addEventListener('pointerdown', event => {
+    if (event.pointerType !== 'mouse' || event.button !== 0 || !event.target.closest('.canvas')) return;
+    if (stage.scrollWidth <= stage.clientWidth && stage.scrollHeight <= stage.clientHeight) return;
+    event.preventDefault();
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, left: stage.scrollLeft, top: stage.scrollTop };
+    stage.setPointerCapture(event.pointerId);
+    stage.setAttribute('data-dragging', '');
+  });
+  stage.addEventListener('pointermove', event => {
+    if (drag?.id !== event.pointerId) return;
+    stage.scrollLeft = drag.left + drag.x - event.clientX;
+    stage.scrollTop = drag.top + drag.y - event.clientY;
+  });
+  stage.addEventListener('lostpointercapture', () => {
+    drag = undefined;
+    stage.removeAttribute('data-dragging');
+  });
   new ResizeObserver(updateZoom).observe(stage);
 
   $('#download').addEventListener('click', () => {

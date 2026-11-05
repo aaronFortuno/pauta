@@ -41,7 +41,7 @@
           <button id="reset" class="button quiet icon-only" type="button" data-aria="reset" data-title="reset"><span data-icon="rotate-ccw"></span></button>
         </div>
         <div class="settings-scroll">
-          <details class="settings-section">
+          <details class="settings-section" name="pauta-settings">
             <summary><span data-icon="book-open"></span><span data-i18n="presets">Plantilles</span><span class="disclosure" data-icon="chevron-down"></span></summary>
             <div class="section-content preset-grid">
               <button type="button" class="button secondary preset" data-preset="wide"><strong data-i18n="wide">Simple ampla</strong><span>12 mm</span></button>
@@ -50,14 +50,14 @@
               <button type="button" class="button secondary preset" data-preset="early"><strong data-i18n="quad">Quàdruple</strong><span data-i18n="early">Infantil i cicle inicial</span></button>
             </div>
           </details>
-          <details class="settings-section" open>
+          <details class="settings-section" name="pauta-settings">
             <summary><span data-icon="rectangle-vertical"></span><span data-i18n="paper">Paper</span><span class="disclosure" data-icon="chevron-down"></span></summary>
             <div class="section-content paper-options">
               <label><span data-i18n="size">Mida</span><select data-field="size"><option value="0">A4</option><option value="1">A5</option></select></label>
               <label><span data-i18n="orientation">Orientació</span><select data-field="landscape"><option value="0" data-i18n="portrait">Vertical</option><option value="1" data-i18n="landscape">Horitzontal</option></select></label>
             </div>
           </details>
-          <details class="settings-section" open>
+          <details class="settings-section" name="pauta-settings" open>
             <summary><span data-icon="settings-2"></span><span data-i18n="ruling">Pauta</span><span class="disclosure" data-icon="chevron-down"></span></summary>
             <div class="section-content">
               <fieldset class="type">
@@ -100,7 +100,7 @@
             </div>
           </details>
 
-          <details class="settings-section">
+          <details class="settings-section" name="pauta-settings">
             <summary><span data-icon="rectangle-vertical"></span><span data-i18n="margins">Marges</span><span class="disclosure" data-icon="chevron-down"></span></summary>
             <div class="section-content">
               <div class="margin-grid">
@@ -117,7 +117,7 @@
             </div>
           </details>
 
-          <details class="settings-section">
+          <details class="settings-section" name="pauta-settings">
             <summary><span data-icon="code"></span><span data-i18n="code">Codi del full</span><span class="disclosure" data-icon="chevron-down"></span></summary>
             <div class="section-content code-controls">
               <p class="hint" data-i18n="codeHelp">El codi permet recuperar els ajustos d’un full imprès.</p>
@@ -156,7 +156,7 @@
             <button type="button" class="button quiet icon-only zoom-fit" id="zoom-fit" data-aria="zoomFit" data-title="zoomFit"><span data-icon="fullscreen"></span></button>
           </div>
         </div>
-        <div class="stage" id="stage" tabindex="0" data-aria="preview">
+        <div class="stage" id="stage" tabindex="0" data-aria="preview" aria-describedby="zoom-hint">
           <div class="canvas">
             <svg id="sheet" viewBox="0 0 210 297" role="img" data-aria="sheet">
               <path id="rules" fill="none"/>
@@ -166,7 +166,11 @@
             </svg>
           </div>
         </div>
-        <div class="preview-foot"><span id="paper-format">A4 · Vertical</span><span id="paper-dimensions">210 × 297 mm</span></div>
+        <div class="preview-foot">
+          <span id="paper-format">A4 · Vertical</span>
+          <span id="zoom-hint" data-i18n="zoomHint">Roda per fer zoom · Arrossega per moure el full</span>
+          <span id="paper-dimensions">210 × 297 mm</span>
+        </div>
       </section>
     </main>
 
@@ -180,7 +184,7 @@
         </a>
       </div>
       <nav class="footer-tools" data-aria="project">
-        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.1.2</button>
+        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.1.3</button>
         <button type="button" class="button quiet" data-dialog="license" data-aria="license" data-title="license"><span data-icon="book-open"></span><span class="footer-label" data-i18n="license">Llicència</span></button>
         <a class="button quiet" href="https://github.com/aaronFortuno/pauta" target="_blank" rel="noopener noreferrer" data-aria="repo" data-title="repo"><span data-icon="git-commit-horizontal"></span><span class="footer-label" data-i18n="repo">Repositori</span></a>
         <button type="button" class="button quiet" data-dialog="v4v" aria-label="Value for Value" title="Value for Value"><span data-icon="heart"></span><span class="footer-label">V4V</span></button>
@@ -200,7 +204,9 @@
   <dialog id="changelog" aria-labelledby="changelog-title">
     <div class="dialog-heading"><h2 id="changelog-title" data-i18n="changelog">Canvis</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
     <div class="dialog-content">
-      <div class="release"><strong>1.1.2</strong><time datetime="2026-11-05"></time></div>
+      <div class="release"><strong>1.1.3</strong><time datetime="2026-11-05"></time></div>
+      <p data-i18n="release113">Menús animats amb un únic apartat obert, zoom amb la roda del ratolí i separació inicial de 12 mm.</p>
+      <div class="release previous-release"><strong>1.1.2</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release112">Tipografia més lleugera, peu compacte i favicon amb fons blanc.</p>
       <div class="release previous-release"><strong>1.1.1</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release111">Pauta arriba a pauta.ortogra.fi amb un avís animat per descobrir Pentagrama.</p>

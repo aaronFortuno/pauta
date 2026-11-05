@@ -1,5 +1,11 @@
 # Canvis
 
+## 1.1.3 · 2026-11-05
+
+- Transicions als menús, als diàlegs i als controls. El menú lateral obre un sol apartat cada vegada i comença amb Pauta.
+- Zoom amb la roda del ratolí centrat en el punter i desplaçament del full arrossegant-lo.
+- Pauta simple amb 12 mm entre línies per defecte.
+
 ## 1.1.2 · 2026-11-05
 
 - Favicon amb fons blanc per mantenir el contrast en pestanyes fosques.

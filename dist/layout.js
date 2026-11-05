@@ -2,7 +2,7 @@
 const Pauta = (() => {
   const sizes = [{ name: 'A4', width: 210, height: 297 }, { name: 'A5', width: 148, height: 210 }];
   const defaults = {
-    type: 1, spacing: 8, weight: 0.5, body: 4, upper: 6, lower: 6,
+    type: 1, spacing: 12, weight: 0.5, body: 4, upper: 6, lower: 6,
     left: 25, right: 25, top: 30, bottom: 30, guideLeft: 0, guideRight: 0, printCode: 0,
     size: 0, landscape: 0, dashed: 0, color: '#000000',
   };
