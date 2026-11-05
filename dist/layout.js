@@ -7,8 +7,8 @@ const Pauta = (() => {
     size: 0, landscape: 0, dashed: 0, color: '#000000',
   };
   const presets = {
-    wide: { spacing: 12 },
-    narrow: { spacing: 6 },
+    wide: { spacing: 19 },
+    narrow: { spacing: 11 },
     middle: { type: 2, body: 5, spacing: 7, weight: 0.3, color: '#505050' },
     early: { type: 4, body: 5, upper: 7, lower: 7, spacing: 9, weight: 0.3, color: '#505050' },
   };
@@ -113,12 +113,16 @@ const Pauta = (() => {
     const left = settings.left;
     const right = page.width - settings.right;
     const stride = groupHeight + spacing;
-    const count = Math.max(0, Math.floor((bottom - top - weight - groupHeight) / stride + 1e-9) + 1);
-    const start = (top + bottom - (count - 1) * stride - groupHeight) / 2;
+    // The first stroke starts at the top margin, including its thickness.
+    const start = top + weight / 2;
+    const available = bottom - top - weight + 1e-9;
+    const count = Math.max(0, Math.floor((available - groupHeight) / stride) + 1);
+    const partial = offsets.filter(offset => count * stride + offset <= available).length;
     const layers = { rules: [], fine: [], margins: [] };
 
-    for (let row = 0; row < count; row++) {
-      offsets.forEach((offset, index) => {
+    for (let row = 0; row < count + Number(partial > 0); row++) {
+      const visible = row < count ? offsets : offsets.slice(0, partial);
+      visible.forEach((offset, index) => {
         const y = start + row * stride + offset;
         const isOuter = (type >= 3 && index === 0) || (type === 4 && index === 3);
         layers[isOuter ? 'fine' : 'rules'].push([left, y, right, y]);
@@ -133,7 +137,7 @@ const Pauta = (() => {
       layers.margins.push([x, top, x, bottom]);
     }
     const code = settings.printCode ? { text: 'Pauta. ' + encode(settings), x: Math.max(left, 7), y: page.height - 7, size: 2.4 } : null;
-    return { page, count, layers, weight, colors, dash, code };
+    return { page, count, partial, layers, weight, colors, dash, code };
   }
 
   function pdf(settings) {

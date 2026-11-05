@@ -1,5 +1,11 @@
 # Canvis
 
+## 1.2.1 · 2026-11-05
+
+- Plantilla simple ampla a 19 mm i estreta a 11 mm.
+- Lliscadors amb el valor en mil·límetres per al cos de les lletres, els ascendents i els descendents.
+- Primera línia ancorada al marge superior. La pauta es retalla al final del full segons el marge inferior.
+
 ## 1.2.0 · 2026-11-05
 
 - Desa i recupera plantilles pròpies amb tots els ajustos del full. Amaga les plantilles inicials que no facis servir i recupera la galeria des del mateix menú.

@@ -35,6 +35,10 @@
     return PautaStrings[key][Object.keys(PautaLanguages).indexOf(locale)];
   }
 
+  function countLabel(key, count) {
+    return t(count === 1 ? key + 'One' : key).replace('{n}', count);
+  }
+
   function updateZoom() {
     const gutter = parseFloat(getComputedStyle(stage).getPropertyValue('--gutter'));
     const { width, height } = stage.getBoundingClientRect();
@@ -63,7 +67,7 @@
   }
 
   function render() {
-    const { page, count, layers, weight, colors, dash, code } = Pauta.layout(state);
+    const { page, count, partial, layers, weight, colors, dash, code } = Pauta.layout(state);
     if (paper?.width !== page.width || paper.height !== page.height) {
       paper = page;
       sheet.setAttribute('viewBox', `0 0 ${page.width} ${page.height}`);
@@ -92,7 +96,12 @@
     }
     const layoutCode = Pauta.encode(state);
     $('#layout-code').value = layoutCode;
-    $('#line-count').value = t(state.type === 1 ? 'lineCount' : 'groupCount').replace('{n}', count);
+    let countText = countLabel(state.type === 1 ? 'lineCount' : 'groupCount', count);
+    if (partial) {
+      const remainder = countLabel('lineCount', partial);
+      countText = count ? `${countText} + ${remainder}` : remainder;
+    }
+    $('#line-count').value = countText;
     $('#spacing-label').textContent = t(state.type === 1 ? 'spacing' : 'groupSpacing');
     $('#calligraphy').hidden = state.type < 2;
     $('#upper-field').hidden = state.type < 3;
@@ -104,8 +113,12 @@
     for (const button of savedTemplates.querySelectorAll('[data-code]')) {
       button.setAttribute('aria-pressed', String(button.dataset.code === layoutCode));
     }
+    const numberFormat = new Intl.NumberFormat(locale);
     for (const slider of $$('input[type="range"]')) {
-      slider.setAttribute('aria-valuetext', new Intl.NumberFormat(locale).format(state[slider.dataset.field]) + ' mm');
+      const value = numberFormat.format(state[slider.dataset.field]) + ' mm';
+      slider.setAttribute('aria-valuetext', value);
+      const reading = $(`output[for="${slider.id}"]`);
+      if (reading) reading.value = value;
     }
   }
 

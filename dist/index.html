@@ -50,8 +50,8 @@
                 <button type="button" id="restore-gallery" class="button quiet" data-i18n="templateRestore" disabled>Recupera la galeria</button>
               </div>
               <div class="preset-grid">
-                <div class="template-card"><button type="button" class="button secondary preset" data-preset="wide"><strong data-i18n="wide">Simple ampla</strong><span>12 mm</span></button><button type="button" class="button quiet template-remove" data-hide-preset="wide" data-title="templateHide"><span data-icon="x"></span></button></div>
-                <div class="template-card"><button type="button" class="button secondary preset" data-preset="narrow"><strong data-i18n="narrow">Simple estreta</strong><span>6 mm</span></button><button type="button" class="button quiet template-remove" data-hide-preset="narrow" data-title="templateHide"><span data-icon="x"></span></button></div>
+                <div class="template-card"><button type="button" class="button secondary preset" data-preset="wide"><strong data-i18n="wide">Simple ampla</strong><span>19 mm</span></button><button type="button" class="button quiet template-remove" data-hide-preset="wide" data-title="templateHide"><span data-icon="x"></span></button></div>
+                <div class="template-card"><button type="button" class="button secondary preset" data-preset="narrow"><strong data-i18n="narrow">Simple estreta</strong><span>11 mm</span></button><button type="button" class="button quiet template-remove" data-hide-preset="narrow" data-title="templateHide"><span data-icon="x"></span></button></div>
                 <div class="template-card"><button type="button" class="button secondary preset" data-preset="middle"><strong data-i18n="double">Doble</strong><span data-i18n="middle">Cicle mitjà</span></button><button type="button" class="button quiet template-remove" data-hide-preset="middle" data-title="templateHide"><span data-icon="x"></span></button></div>
                 <div class="template-card"><button type="button" class="button secondary preset" data-preset="early"><strong data-i18n="quad">Quàdruple</strong><span data-i18n="early">Infantil i cicle inicial</span></button><button type="button" class="button quiet template-remove" data-hide-preset="early" data-title="templateHide"><span data-icon="x"></span></button></div>
               </div>
@@ -107,17 +107,20 @@
                 <label class="ink-color"><span data-i18n="ink">Color</span><input type="color" data-field="color" value="#000000"></label>
               </div>
               <div class="advanced" id="calligraphy" hidden>
-                <div class="measure-row">
+                <div class="measure-row calligraphy-measure">
                   <label for="body-value" data-i18n="body">Cos de les lletres</label>
-                  <span class="measure"><input id="body-value" type="number" inputmode="decimal" data-field="body"><span>mm</span></span>
+                  <input id="body-value" type="range" data-field="body">
+                  <output for="body-value" aria-hidden="true"></output>
                 </div>
-                <div class="measure-row" id="upper-field" hidden>
+                <div class="measure-row calligraphy-measure" id="upper-field" hidden>
                   <label for="upper-value" data-i18n="upper">Alçada d’ascendents</label>
-                  <span class="measure"><input id="upper-value" type="number" inputmode="decimal" data-field="upper"><span>mm</span></span>
+                  <input id="upper-value" type="range" data-field="upper">
+                  <output for="upper-value" aria-hidden="true"></output>
                 </div>
-                <div class="measure-row" id="lower-field" hidden>
+                <div class="measure-row calligraphy-measure" id="lower-field" hidden>
                   <label for="lower-value" data-i18n="lower">Fondària de descendents</label>
-                  <span class="measure"><input id="lower-value" type="number" inputmode="decimal" data-field="lower"><span>mm</span></span>
+                  <input id="lower-value" type="range" data-field="lower">
+                  <output for="lower-value" aria-hidden="true"></output>
                 </div>
               </div>
             </div>
@@ -207,7 +210,7 @@
         </a>
       </div>
       <nav class="footer-tools" data-aria="project">
-        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.2.0</button>
+        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.2.1</button>
         <button type="button" class="button quiet" data-dialog="license" data-aria="license" data-title="license"><span data-icon="book-open"></span><span class="footer-label" data-i18n="license">Llicència</span></button>
         <a class="button quiet" href="https://github.com/aaronFortuno/pauta" target="_blank" rel="noopener noreferrer" data-aria="repo" data-title="repo"><span data-icon="git-commit-horizontal"></span><span class="footer-label" data-i18n="repo">Repositori</span></a>
         <button type="button" class="button quiet" data-dialog="v4v" aria-label="Value for Value" title="Value for Value"><span data-icon="heart"></span><span class="footer-label">V4V</span></button>
@@ -228,7 +231,9 @@
   <dialog id="changelog" aria-labelledby="changelog-title">
     <div class="dialog-heading"><h2 id="changelog-title" data-i18n="changelog">Canvis</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
     <div class="dialog-content">
-      <div class="release"><strong>1.2.0</strong><time datetime="2026-11-05"></time></div>
+      <div class="release"><strong>1.2.1</strong><time datetime="2026-11-05"></time></div>
+      <p data-i18n="release121">La pauta comença al marge superior. Nous espaiats per a les plantilles simples i lliscadors per a la cal·ligrafia.</p>
+      <div class="release previous-release"><strong>1.2.0</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release120">Plantilles pròpies, galeria inicial recuperable i còpies de seguretat des del menú Plantilles.</p>
       <div class="release previous-release"><strong>1.1.4</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release114">L’avís de Pentagrama mostra el seu logotip.</p>
