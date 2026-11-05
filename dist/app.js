@@ -3,12 +3,14 @@
   const $$ = selector => [...document.querySelectorAll(selector)];
   const state = { ...Pauta.defaults };
   const settings = $$('[data-field], [name="type"]');
+  const presetButtons = $$('[data-preset]');
   const sheet = $('#sheet');
   const stage = $('#stage');
   const languages = $('#language-menu');
   const languageControl = $('#language-control');
   let locale = 'ca';
   let zoom = 1;
+  let paper;
 
   function icon(name) {
     return `<svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${PautaIcons[name]}</svg>`;
@@ -31,7 +33,7 @@
 
   function updateZoom() {
     const gutter = parseFloat(getComputedStyle(stage).getPropertyValue('--gutter'));
-    const maxWidth = Math.min(stage.clientWidth - gutter * 2, (stage.clientHeight - gutter * 2) * Pauta.page.width / Pauta.page.height);
+    const maxWidth = Math.min(stage.clientWidth - gutter * 2, (stage.clientHeight - gutter * 2) * paper.width / paper.height);
     sheet.style.setProperty('--sheet-width', Math.max(1, maxWidth * zoom) + 'px');
     $('#zoom-value').value = new Intl.NumberFormat(locale, { style: 'percent' }).format(zoom);
     $('#zoom-out').disabled = zoom <= 0.5;
@@ -39,12 +41,24 @@
   }
 
   function render() {
-    const { count, layers, weight, code } = Pauta.layout(state);
+    const { page, count, layers, weight, colors, dash, code } = Pauta.layout(state);
+    if (paper?.width !== page.width || paper.height !== page.height) {
+      paper = page;
+      sheet.setAttribute('viewBox', `0 0 ${page.width} ${page.height}`);
+      sheet.style.setProperty('--paper-aspect', `${page.width} / ${page.height}`);
+      sheet.style.setProperty('--paper-width', page.width + 'mm');
+      sheet.style.setProperty('--paper-height', page.height + 'mm');
+      $('#print-size').textContent = `@page { size: ${page.width}mm ${page.height}mm; margin: 0; }`;
+      $('#paper-dimensions').textContent = `${page.width} × ${page.height} mm`;
+      updateZoom();
+    }
+    $('#paper-format').textContent = `${page.name} · ${t(state.landscape ? 'landscape' : 'portrait')}`;
     for (const [name, segments] of Object.entries(layers)) {
       const path = $('#' + name);
       path.setAttribute('d', segments.map(([x1, y1, x2, y2]) => `M${x1} ${y1}L${x2} ${y2}`).join(' '));
-      path.setAttribute('stroke', Pauta.colors[name]);
+      path.setAttribute('stroke', colors[name]);
       path.setAttribute('stroke-width', weight);
+      path.setAttribute('stroke-dasharray', name === 'margins' || !dash.length ? 'none' : dash.join(' '));
     }
     const sheetCode = $('#sheet-code');
     sheetCode.textContent = code?.text || '';
@@ -52,7 +66,7 @@
       sheetCode.setAttribute('x', code.x);
       sheetCode.setAttribute('y', code.y);
       sheetCode.setAttribute('font-size', code.size);
-      sheetCode.setAttribute('fill', Pauta.colors.code);
+      sheetCode.setAttribute('fill', colors.code);
     }
     $('#layout-code').value = Pauta.encode(state);
     $('#line-count').value = t(state.type === 1 ? 'lineCount' : 'groupCount').replace('{n}', count);
@@ -60,6 +74,10 @@
     $('#calligraphy').hidden = state.type < 2;
     $('#upper-field').hidden = state.type < 3;
     $('#lower-field').hidden = state.type < 4;
+    for (const button of presetButtons) {
+      const active = Object.entries(presetState(button.dataset.preset)).every(([key, value]) => state[key] === value);
+      button.setAttribute('aria-pressed', String(active));
+    }
     for (const slider of $$('input[type="range"]')) {
       slider.setAttribute('aria-valuetext', new Intl.NumberFormat(locale).format(state[slider.dataset.field]) + ' mm');
     }
@@ -72,13 +90,24 @@
     else input.value = value;
   }
 
+  function applyState(next) {
+    Object.assign(state, next);
+    settings.forEach(syncField);
+    render();
+  }
+
+  function presetState(name) {
+    const { size, landscape, printCode } = state;
+    return { ...Pauta.defaults, ...Pauta.presets[name], size, landscape, printCode };
+  }
+
   function setLanguage(value) {
     locale = value;
     document.documentElement.lang = value;
     document.title = 'Pauta. · ' + t('title');
     $('#current-language').textContent = value.toUpperCase();
-    $('#release-date').textContent = new Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone: 'UTC' })
-      .format(new Date($('#release-date').dateTime));
+    const date = new Intl.DateTimeFormat(locale, { dateStyle: 'long', timeZone: 'UTC' });
+    for (const time of $$('#changelog time')) time.textContent = date.format(new Date(time.dateTime));
     for (const item of $$('[data-i18n]')) item.textContent = t(item.dataset.i18n);
     for (const item of $$('[data-aria]')) item.setAttribute('aria-label', t(item.dataset.aria));
     for (const item of $$('[data-title]')) item.title = t(item.dataset.title);
@@ -140,7 +169,8 @@
     }
     input.addEventListener('input', () => {
       if (input.type === 'number' && (!input.validity.valid || input.value === '')) return;
-      state[key] = input.type === 'checkbox' ? Number(input.checked) : Number(input.value);
+      if (input.type === 'color') state[key] = input.value;
+      else state[key] = input.type === 'checkbox' ? Number(input.checked) : Number(input.value);
       for (const peer of settings) {
         if (peer !== input && peer.dataset.field === key) syncField(peer);
       }
@@ -161,11 +191,10 @@
     syncField(input);
   }
 
-  $('#reset').addEventListener('click', () => {
-    Object.assign(state, Pauta.defaults);
-    settings.forEach(syncField);
-    render();
-  });
+  $('#reset').addEventListener('click', () => applyState(Pauta.defaults));
+  for (const button of presetButtons) {
+    button.addEventListener('click', () => applyState(presetState(button.dataset.preset)));
+  }
   $('#copy-code').addEventListener('click', () => copy(Pauta.encode(state), '#code-status'));
   $('#copy-lightning').addEventListener('click', () => copy($('#lightning-address').textContent, '#lightning-status'));
   $('#restore-form').addEventListener('submit', event => {
@@ -177,9 +206,7 @@
       showStatus('#code-status', 'invalidCode');
       return;
     }
-    Object.assign(state, restored);
-    settings.forEach(syncField);
-    render();
+    applyState(restored);
     showStatus('#code-status', 'restored');
   });
   $('#restore-code').addEventListener('input', event => {
@@ -198,7 +225,7 @@
     const url = URL.createObjectURL(new Blob([Pauta.pdf(state)], { type: 'application/pdf' }));
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'pauta-a4.pdf';
+    link.download = `pauta-${paper.name.toLowerCase()}${state.landscape ? '-landscape' : ''}.pdf`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 60_000);
   });
@@ -209,5 +236,15 @@
   for (const button of $$('[data-close]')) {
     button.addEventListener('click', () => button.closest('dialog').close());
   }
+  const promo = $('#project-promo');
+  const promoKey = 'pauta-pentagrama-promo';
+  let promoDismissed = false;
+  try { promoDismissed = localStorage.getItem(promoKey) === promo.dataset.until; } catch {}
+  promo.hidden = promoDismissed || !(Date.now() < Date.parse(promo.dataset.until));
+  $('#close-promo').addEventListener('click', () => {
+    promo.hidden = true;
+    try { localStorage.setItem(promoKey, promo.dataset.until); } catch {}
+    stage.focus({ preventScroll: true });
+  });
   setLanguage(readLanguage());
 })();

@@ -1,12 +1,14 @@
 # Pauta.
 
-Generador de paper pautat A4 per escriure i practicar cal·ligrafia. Obre `dist/index.html` al navegador. La pàgina funciona sense instal·lar dependències i genera el PDF al dispositiu.
+Generador de paper pautat A4 i A5 per escriure i practicar cal·ligrafia. Obre `dist/index.html` al navegador. La pàgina funciona sense instal·lar dependències i genera el PDF al dispositiu.
 
 - Pauta simple, doble, triple o quàdruple. Les pautes de cal·ligrafia tenen controls per al cos de les lletres i, quan correspon, per als ascendents i descendents.
+- Plantilles de pauta ampla i estreta, doble per a cicle mitjà i quàdruple per a infantil i cicle inicial. Es poden aplicar amb qualsevol mida i orientació.
+- Paper A4 o A5 en vertical o horitzontal, amb línies contínues o discontínues i color configurable.
 - Marges independents i guies verticals opcionals als dos costats.
-- Codi `P1` opcional al peu. Introdueix-lo al quadre **Codi del full** per recuperar la configuració del paper.
+- Codi `P2` opcional al peu. Introdueix-lo al quadre **Codi del full** per recuperar la configuració del paper. També s’accepten els codis `P1`.
 - Previsualització amb zoom. Imprimeix al 100 % per conservar les mesures del PDF.
 
-Per publicar-lo com a web estàtica, serveix el contingut de `dist/`. Els recursos fan servir rutes relatives, de manera que el mateix directori serveix tant per a un domini propi com per a una subruta.
+El domini previst és `pauta.ortogra.fi`. Per publicar el web, serveix el contingut de `dist/`. L’avís de Pentagrama es pot tancar i caduca en la data indicada a `data-until` de `dist/index.html`.
 
 Projecte amb llicència [GNU GPL-3.0](LICENSE). Les [icones Lucide](https://lucide.dev/) es distribueixen sota les seves [llicències ISC i MIT](dist/lucide-LICENSE.txt).
