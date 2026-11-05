@@ -4,6 +4,8 @@
   const state = { ...Pauta.defaults };
   const settings = $$('[data-field], [name="type"]');
   const presetButtons = $$('[data-preset]');
+  const hidePresetButtons = $$('[data-hide-preset]');
+  const savedTemplates = $('#saved-templates');
   const sheet = $('#sheet');
   const stage = $('#stage');
   const languages = $('#language-menu');
@@ -12,6 +14,7 @@
   let zoom = 1;
   let paper;
   let drag;
+  let library = { hidden: [], saved: [] };
 
   function icon(name) {
     return `<svg class="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${PautaIcons[name]}</svg>`;
@@ -87,7 +90,8 @@
       sheetCode.setAttribute('font-size', code.size);
       sheetCode.setAttribute('fill', colors.code);
     }
-    $('#layout-code').value = Pauta.encode(state);
+    const layoutCode = Pauta.encode(state);
+    $('#layout-code').value = layoutCode;
     $('#line-count').value = t(state.type === 1 ? 'lineCount' : 'groupCount').replace('{n}', count);
     $('#spacing-label').textContent = t(state.type === 1 ? 'spacing' : 'groupSpacing');
     $('#calligraphy').hidden = state.type < 2;
@@ -96,6 +100,9 @@
     for (const button of presetButtons) {
       const active = Object.entries(presetState(button.dataset.preset)).every(([key, value]) => state[key] === value);
       button.setAttribute('aria-pressed', String(active));
+    }
+    for (const button of savedTemplates.querySelectorAll('[data-code]')) {
+      button.setAttribute('aria-pressed', String(button.dataset.code === layoutCode));
     }
     for (const slider of $$('input[type="range"]')) {
       slider.setAttribute('aria-valuetext', new Intl.NumberFormat(locale).format(state[slider.dataset.field]) + ' mm');
@@ -120,6 +127,66 @@
     return { ...Pauta.defaults, ...Pauta.presets[name], size, landscape, printCode };
   }
 
+  function renderLibrary() {
+    for (const button of hidePresetButtons) {
+      const card = button.closest('.template-card');
+      card.hidden = library.hidden.includes(button.dataset.hidePreset);
+      button.setAttribute('aria-label', t('templateHide') + ' · ' + card.querySelector('strong').textContent);
+    }
+    $('#gallery-empty').hidden = library.hidden.length !== presetButtons.length;
+    $('#restore-gallery').disabled = library.hidden.length === 0;
+    $('#export-templates').disabled = library.saved.length === 0;
+    const hadFocus = savedTemplates.contains(document.activeElement);
+    savedTemplates.replaceChildren(...library.saved.map(template => {
+      const row = document.createElement('li');
+      row.className = 'template-card';
+      const use = document.createElement('button');
+      use.type = 'button';
+      use.className = 'button secondary preset';
+      use.dataset.code = template.code;
+      use.setAttribute('aria-pressed', String(template.code === $('#layout-code').value));
+      const name = document.createElement('strong');
+      name.textContent = template.name;
+      const settings = Pauta.decode(template.code);
+      const info = document.createElement('span');
+      const size = Pauta.paper(settings).name;
+      const spacing = new Intl.NumberFormat(locale).format(settings.spacing);
+      info.textContent = `${size} · ${t(['single', 'double', 'triple', 'quad'][settings.type - 1])} · ${spacing} mm`;
+      use.append(name, info);
+      use.addEventListener('click', () => applyState(settings));
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'button quiet template-remove';
+      remove.title = t('templateRemove');
+      remove.setAttribute('aria-label', t('templateRemove') + ' · ' + template.name);
+      remove.innerHTML = icon('x');
+      remove.addEventListener('click', () => updateLibrary(current => ({
+        ...current, saved: current.saved.filter(item => PautaLibrary.templateKey(item) !== PautaLibrary.templateKey(template)),
+      }), 'templateRemoved'));
+      row.append(use, remove);
+      return row;
+    }));
+    if (hadFocus) $('#template-name').focus({ preventScroll: true });
+  }
+
+  function loadLibrary() {
+    try { library = PautaLibrary.read(); }
+    catch { showStatus('#template-status', 'templateStorageError', true); }
+  }
+
+  async function updateLibrary(update, success) {
+    try {
+      library = await PautaLibrary.change(update);
+      renderLibrary();
+      showStatus('#template-status', success);
+      return true;
+    } catch (error) {
+      const messages = ['templateDuplicate', 'templateNoNew', 'templateFull'];
+      showStatus('#template-status', messages.includes(error.message) ? error.message : 'templateStorageError', true);
+      return false;
+    }
+  }
+
   function setLanguage(value) {
     locale = value;
     document.documentElement.lang = value;
@@ -131,17 +198,18 @@
     for (const item of $$('[data-aria]')) item.setAttribute('aria-label', t(item.dataset.aria));
     for (const item of $$('[data-title]')) item.title = t(item.dataset.title);
     for (const button of languages.children) button.setAttribute('aria-pressed', String(button.lang === value));
-    for (const status of [$('#code-status'), $('#lightning-status')]) {
+    for (const status of [$('#code-status'), $('#lightning-status'), $('#template-status')]) {
       if (status.dataset.message) status.textContent = t(status.dataset.message);
     }
     render();
+    renderLibrary();
     updateZoom();
   }
 
-  function showStatus(target, key) {
+  function showStatus(target, key, error = false) {
     const status = $(target);
     status.dataset.message = key;
-    status.toggleAttribute('data-error', key === 'invalidCode' || key === 'copyFailed');
+    status.toggleAttribute('data-error', error || key === 'invalidCode' || key === 'copyFailed');
     status.textContent = t(key);
   }
 
@@ -214,6 +282,64 @@
   for (const button of presetButtons) {
     button.addEventListener('click', () => applyState(presetState(button.dataset.preset)));
   }
+  for (const button of hidePresetButtons) {
+    button.addEventListener('click', async () => {
+      const id = button.dataset.hidePreset;
+      const saved = await updateLibrary(current => ({ ...current, hidden: [...new Set([...current.hidden, id])] }), 'templateHidden');
+      if (saved) $('#restore-gallery').focus({ preventScroll: true });
+    });
+  }
+  $('#restore-gallery').addEventListener('click', async () => {
+    const saved = await updateLibrary(current => ({ ...current, hidden: [] }), 'templateRestored');
+    if (saved) presetButtons[0].focus({ preventScroll: true });
+  });
+  $('#save-template').addEventListener('submit', async event => {
+    event.preventDefault();
+    const field = $('#template-name');
+    const name = field.value.trim();
+    if (!name) {
+      showStatus('#template-status', 'templateNameRequired', true);
+      return;
+    }
+    const template = { name, code: Pauta.encode(state) };
+    const saved = await updateLibrary(current => {
+      const templates = PautaLibrary.merge(current.saved, [template]);
+      if (templates.length === current.saved.length) throw new Error('templateDuplicate');
+      return { ...current, saved: templates };
+    }, 'templateSaved');
+    if (saved && field.value.trim() === name) field.value = '';
+  });
+  const templateFile = $('#template-file');
+  $('#import-templates').addEventListener('click', () => templateFile.click());
+  templateFile.addEventListener('change', async () => {
+    const [file] = templateFile.files;
+    templateFile.value = '';
+    if (!file) return;
+    let incoming;
+    try { incoming = await PautaLibrary.importBackup(file); }
+    catch {
+      showStatus('#template-status', 'templateInvalidBackup', true);
+      return;
+    }
+    await updateLibrary(current => {
+      const templates = PautaLibrary.merge(current.saved, incoming);
+      if (templates.length === current.saved.length) throw new Error('templateNoNew');
+      return { ...current, saved: templates };
+    }, 'templateImported');
+  });
+  $('#export-templates').addEventListener('click', () => {
+    try {
+      const { saved } = PautaLibrary.read();
+      if (saved.length) downloadFile(new Blob([PautaLibrary.backup(saved)], { type: 'application/json' }), 'pauta-plantilles.json');
+    } catch {
+      showStatus('#template-status', 'templateStorageError', true);
+    }
+  });
+  window.addEventListener('storage', event => {
+    if (event.key !== null && event.key !== PautaLibrary.key) return;
+    loadLibrary();
+    renderLibrary();
+  });
   $('#copy-code').addEventListener('click', () => copy(Pauta.encode(state), '#code-status'));
   $('#copy-lightning').addEventListener('click', () => copy($('#lightning-address').textContent, '#lightning-status'));
   $('#restore-form').addEventListener('submit', event => {
@@ -264,13 +390,17 @@
   });
   new ResizeObserver(updateZoom).observe(stage);
 
-  $('#download').addEventListener('click', () => {
-    const url = URL.createObjectURL(new Blob([Pauta.pdf(state)], { type: 'application/pdf' }));
+  function downloadFile(blob, filename) {
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `pauta-${paper.name.toLowerCase()}${state.landscape ? '-landscape' : ''}.pdf`;
+    link.download = filename;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  }
+  $('#download').addEventListener('click', () => {
+    downloadFile(new Blob([Pauta.pdf(state)], { type: 'application/pdf' }),
+      `pauta-${paper.name.toLowerCase()}${state.landscape ? '-landscape' : ''}.pdf`);
   });
   $('#print').addEventListener('click', () => window.print());
   for (const button of $$('[data-dialog]')) {
@@ -279,5 +409,6 @@
   for (const button of $$('[data-close]')) {
     button.addEventListener('click', () => button.closest('dialog').close());
   }
+  loadLibrary();
   setLanguage(readLanguage());
 })();

@@ -1,5 +1,10 @@
 # Canvis
 
+## 1.2.0 · 2026-11-05
+
+- Desa i recupera plantilles pròpies amb tots els ajustos del full. Amaga les plantilles inicials que no facis servir i recupera la galeria des del mateix menú.
+- Descarrega i importa còpies JSON de les plantilles pròpies. La importació conserva les plantilles locals i evita duplicats exactes.
+
 ## 1.1.4 · 2026-11-05
 
 - Logotip de Pentagrama a l’avís que enllaça amb el seu generador de paper de música.

@@ -4,6 +4,7 @@ Generador de paper pautat A4 i A5 per escriure i practicar cal·ligrafia. Obre `
 
 - Pauta simple, doble, triple o quàdruple. Les pautes de cal·ligrafia tenen controls per al cos de les lletres i, quan correspon, per als ascendents i descendents.
 - Plantilles de pauta ampla i estreta, doble per a cicle mitjà i quàdruple per a infantil i cicle inicial. Es poden aplicar amb qualsevol mida i orientació.
+- Al menú **Plantilles**, desa el full actual amb un nom i amaga o recupera les plantilles inicials. Les plantilles pròpies i les preferències de galeria es desen al navegador. Pots descarregar les plantilles pròpies en JSON i importar-les al mateix navegador o en un altre. La importació afegeix les plantilles noves i omet les coincidències exactes.
 - Paper A4 o A5 en vertical o horitzontal, amb línies contínues o discontínues i color configurable.
 - Marges independents i guies verticals opcionals als dos costats.
 - Codi `P2` opcional al peu. Introdueix-lo al quadre **Codi del full** per recuperar la configuració del paper. També s’accepten els codis `P1`.
