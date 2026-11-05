@@ -1,5 +1,9 @@
 # Canvis
 
+## 1.1.4 · 2026-11-05
+
+- Logotip de Pentagrama a l’avís que enllaça amb el seu generador de paper de música.
+
 ## 1.1.3 · 2026-11-05
 
 - Transicions als menús, als diàlegs i als controls. El menú lateral obre un sol apartat cada vegada i comença amb Pauta.

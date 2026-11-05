@@ -1,8 +1,9 @@
 (() => {
   const promo = document.querySelector('#project-promo');
+  if (!promo) return;
   const progress = promo.querySelector('.promo-progress');
   const link = promo.querySelector('a');
-  const close = promo.querySelector('#close-promo');
+  const close = promo.querySelector('.promo-close');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const arrival = [
     { opacity: 0, transform: 'translate(18px, 12px)' },
@@ -23,7 +24,7 @@
     leaving = true;
     countdown?.cancel();
     document.removeEventListener('visibilitychange', updateCountdown);
-    if (promo.contains(document.activeElement)) document.querySelector('#stage').focus({ preventScroll: true });
+    if (promo.contains(document.activeElement)) document.querySelector(promo.dataset.returnFocus)?.focus({ preventScroll: true });
     promo.inert = true;
     const current = getComputedStyle(promo);
     const start = { opacity: current.opacity, transform: current.transform };
@@ -45,7 +46,9 @@
     updateCountdown();
   }
 
-  window.addEventListener('load', () => setTimeout(show, 1000), { once: true });
+  const schedule = () => setTimeout(show, 1000);
+  if (document.readyState === 'complete') schedule();
+  else window.addEventListener('load', schedule, { once: true });
   promo.addEventListener('pointerenter', updateCountdown);
   promo.addEventListener('pointerleave', updateCountdown);
   promo.addEventListener('focusin', updateCountdown);

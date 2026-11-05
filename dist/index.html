@@ -184,7 +184,7 @@
         </a>
       </div>
       <nav class="footer-tools" data-aria="project">
-        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.1.3</button>
+        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.1.4</button>
         <button type="button" class="button quiet" data-dialog="license" data-aria="license" data-title="license"><span data-icon="book-open"></span><span class="footer-label" data-i18n="license">Llicència</span></button>
         <a class="button quiet" href="https://github.com/aaronFortuno/pauta" target="_blank" rel="noopener noreferrer" data-aria="repo" data-title="repo"><span data-icon="git-commit-horizontal"></span><span class="footer-label" data-i18n="repo">Repositori</span></a>
         <button type="button" class="button quiet" data-dialog="v4v" aria-label="Value for Value" title="Value for Value"><span data-icon="heart"></span><span class="footer-label">V4V</span></button>
@@ -192,19 +192,22 @@
     </footer>
   </div>
 
-  <aside class="project-promo" id="project-promo" data-aria="pentagramaPromo" hidden>
+  <aside class="project-promo" id="project-promo" data-aria="pentagramaPromo" data-return-focus="#stage" hidden>
     <a href="https://pentagrama.page/" target="_blank" rel="noopener noreferrer">
-      <span><strong>Pentagrama<span class="brand-period">.</span></strong><span class="promo-text" data-i18n="pentagramaPromo">Paper de pentagrama a mida</span></span>
+      <img class="promo-symbol" src="./pentagrama-symbol.svg" width="28" height="28" alt="">
+      <span class="promo-copy"><strong>Pentagrama<span class="brand-period">.</span></strong><span class="promo-text" data-i18n="pentagramaPromo">Paper de pentagrama a mida</span></span>
       <span data-icon="external-link"></span>
     </a>
-    <button id="close-promo" class="button quiet icon-only" type="button" data-aria="close"><span data-icon="x"></span></button>
+    <button class="promo-close" type="button" data-aria="close"><span data-icon="x"></span></button>
     <span class="promo-progress" aria-hidden="true"></span>
   </aside>
 
   <dialog id="changelog" aria-labelledby="changelog-title">
     <div class="dialog-heading"><h2 id="changelog-title" data-i18n="changelog">Canvis</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
     <div class="dialog-content">
-      <div class="release"><strong>1.1.3</strong><time datetime="2026-11-05"></time></div>
+      <div class="release"><strong>1.1.4</strong><time datetime="2026-11-05"></time></div>
+      <p data-i18n="release114">L’avís de Pentagrama mostra el seu logotip.</p>
+      <div class="release previous-release"><strong>1.1.3</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release113">Menús animats amb un únic apartat obert, zoom amb la roda del ratolí i separació inicial de 12 mm.</p>
       <div class="release previous-release"><strong>1.1.2</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release112">Tipografia més lleugera, peu compacte i favicon amb fons blanc.</p>
