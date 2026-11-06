@@ -412,10 +412,10 @@
     setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }
 
-  async function trackSheetOutput(method) {
+  async function trackPdfDownload() {
     try {
       await window.umami?.track('sheet-output', {
-        method,
+        method: 'pdf',
         paper: paper.name,
         orientation: state.landscape ? 'landscape' : 'portrait',
         ruling_lines: state.type,
@@ -427,18 +427,14 @@
         show_code: Boolean(state.printCode),
       });
     } catch {
-      // Printing and downloads work even when analytics is unavailable.
+      // Downloads work even when analytics is unavailable.
     }
   }
 
   $('#download').addEventListener('click', () => {
     downloadFile(new Blob([Pauta.pdf(state)], { type: 'application/pdf' }),
       `pauta-${paper.name.toLowerCase()}${state.landscape ? '-landscape' : ''}.pdf`);
-    trackSheetOutput('pdf');
-  });
-  $('#print').addEventListener('click', () => {
-    trackSheetOutput('print');
-    window.print();
+    trackPdfDownload();
   });
   for (const button of $$('[data-dialog]')) {
     button.addEventListener('click', () => document.getElementById(button.dataset.dialog).showModal());

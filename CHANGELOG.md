@@ -1,5 +1,11 @@
 # Canvis
 
+## 1.2.3 · 2026-11-06
+
+- Més espai per al full, amb controls de zoom i informació del paper superposats a la previsualització.
+- Un sol botó per descarregar el PDF. Umami registra la descàrrega.
+- Tipografia una mica més petita i signatura d’ortogra.fi amb el mateix estil que a Pentagrama i Relleu Obert.
+
 ## 1.2.2 · 2026-11-06
 
 - Umami compta les visites i les opcions de pauta en descarregar el PDF o obrir el diàleg d’impressió.

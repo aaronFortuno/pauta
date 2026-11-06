@@ -167,24 +167,11 @@
         </div>
         <div class="actions">
           <button type="button" class="button primary" id="download"><span data-icon="download"></span><span data-i18n="download">Descarrega el PDF</span></button>
-          <button type="button" class="button secondary" id="print"><span data-icon="printer"></span><span data-i18n="print">Imprimeix</span></button>
         </div>
       </aside>
 
-      <section class="panel preview" aria-labelledby="preview-title">
-        <div class="panel-heading preview-heading">
-          <div class="preview-caption">
-            <h2 id="preview-title" data-i18n="preview">Previsualització</h2>
-            <output id="line-count"></output>
-          </div>
-          <div class="zoom">
-            <button type="button" class="button quiet icon-only" id="zoom-out" data-aria="zoomOut" data-title="zoomOut"><span data-icon="minus"></span></button>
-            <output id="zoom-value">100 %</output>
-            <button type="button" class="button quiet icon-only" id="zoom-in" data-aria="zoomIn" data-title="zoomIn"><span data-icon="plus"></span></button>
-            <button type="button" class="button quiet icon-only zoom-fit" id="zoom-fit" data-aria="zoomFit" data-title="zoomFit"><span data-icon="fullscreen"></span></button>
-          </div>
-        </div>
-        <div class="stage" id="stage" tabindex="0" data-aria="preview" aria-describedby="zoom-hint">
+      <section class="panel preview" data-aria="preview" aria-label="Previsualització">
+        <div class="stage" id="stage" tabindex="0" aria-describedby="paper-format paper-dimensions">
           <div class="canvas">
             <svg id="sheet" viewBox="0 0 210 297" role="img" data-aria="sheet">
               <path id="rules" fill="none"/>
@@ -194,10 +181,16 @@
             </svg>
           </div>
         </div>
-        <div class="preview-foot">
-          <span id="paper-format">A4 · Vertical</span>
-          <span id="zoom-hint" data-i18n="zoomHint">Roda per fer zoom · Arrossega per moure el full</span>
+        <div class="preview-overlay paper-info">
+          <strong id="paper-format">A4 · Vertical</strong>
           <span id="paper-dimensions">210 × 297 mm</span>
+          <output id="line-count"></output>
+        </div>
+        <div class="preview-overlay zoom">
+          <button type="button" class="button quiet icon-only" id="zoom-out" data-aria="zoomOut" data-title="zoomOut"><span data-icon="minus"></span></button>
+          <output id="zoom-value">100 %</output>
+          <button type="button" class="button quiet icon-only" id="zoom-in" data-aria="zoomIn" data-title="zoomIn"><span data-icon="plus"></span></button>
+          <button type="button" class="button quiet icon-only zoom-fit" id="zoom-fit" data-aria="zoomFit" data-title="zoomFit"><span data-icon="fullscreen"></span></button>
         </div>
       </section>
     </main>
@@ -207,12 +200,12 @@
       <div class="footer-credit">
         <span data-i18n="footerCredit">Un projecte d’</span>
         <a class="family-link" href="https://ortogra.fi/">
-          <img src="./ortogra-symbol.svg" width="14" height="14" alt="">
-          <span>ortogra<span class="brand-period">.</span>fi</span>
+          <img src="./ortogra-symbol.svg" width="22" height="22" alt="">
+          <span>ortogra<span class="family-dot">.</span>fi</span>
         </a>
       </div>
       <nav class="footer-tools" data-aria="project">
-        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.2.2</button>
+        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.2.3</button>
         <button type="button" class="button quiet" data-dialog="license" data-aria="license" data-title="license"><span data-icon="book-open"></span><span class="footer-label" data-i18n="license">Llicència</span></button>
         <a class="button quiet" href="https://github.com/aaronFortuno/pauta" target="_blank" rel="noopener noreferrer" data-aria="repo" data-title="repo"><span data-icon="git-commit-horizontal"></span><span class="footer-label" data-i18n="repo">Repositori</span></a>
         <button type="button" class="button quiet" data-dialog="v4v" aria-label="Value for Value" title="Value for Value"><span data-icon="heart"></span><span class="footer-label">V4V</span></button>
@@ -233,7 +226,9 @@
   <dialog id="changelog" aria-labelledby="changelog-title">
     <div class="dialog-heading"><h2 id="changelog-title" data-i18n="changelog">Canvis</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
     <div class="dialog-content">
-      <div class="release"><strong>1.2.2</strong><time datetime="2026-11-06"></time></div>
+      <div class="release"><strong>1.2.3</strong><time datetime="2026-11-06"></time></div>
+      <p data-i18n="release123">Més espai per al full, amb el zoom i les mides sobre la previsualització. Un sol botó per descarregar el PDF i la signatura d’ortogra.fi al peu.</p>
+      <div class="release previous-release"><strong>1.2.2</strong><time datetime="2026-11-06"></time></div>
       <p data-i18n="release122">Umami compta les visites i les opcions de pauta triades en descarregar el PDF o imprimir.</p>
       <div class="release previous-release"><strong>1.2.1</strong><time datetime="2026-11-05"></time></div>
       <p data-i18n="release121">La pauta comença al marge superior. Nous espaiats per a les plantilles simples i lliscadors per a la cal·ligrafia.</p>
