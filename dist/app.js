@@ -411,11 +411,35 @@
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }
+
+  async function trackSheetOutput(method) {
+    try {
+      await window.umami?.track('sheet-output', {
+        method,
+        paper: paper.name,
+        orientation: state.landscape ? 'landscape' : 'portrait',
+        ruling_lines: state.type,
+        spacing_mm: state.spacing,
+        weight_mm: state.weight,
+        line_style: state.dashed ? 'dashed' : 'solid',
+        left_guide: Boolean(state.guideLeft),
+        right_guide: Boolean(state.guideRight),
+        show_code: Boolean(state.printCode),
+      });
+    } catch {
+      // Printing and downloads work even when analytics is unavailable.
+    }
+  }
+
   $('#download').addEventListener('click', () => {
     downloadFile(new Blob([Pauta.pdf(state)], { type: 'application/pdf' }),
       `pauta-${paper.name.toLowerCase()}${state.landscape ? '-landscape' : ''}.pdf`);
+    trackSheetOutput('pdf');
   });
-  $('#print').addEventListener('click', () => window.print());
+  $('#print').addEventListener('click', () => {
+    trackSheetOutput('print');
+    window.print();
+  });
   for (const button of $$('[data-dialog]')) {
     button.addEventListener('click', () => document.getElementById(button.dataset.dialog).showModal());
   }

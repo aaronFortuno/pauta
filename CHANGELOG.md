@@ -1,5 +1,9 @@
 # Canvis
 
+## 1.2.2 · 2026-11-06
+
+- Umami compta les visites i les opcions de pauta en descarregar el PDF o obrir el diàleg d’impressió.
+
 ## 1.2.1 · 2026-11-05
 
 - Plantilla simple ampla a 19 mm i estreta a 11 mm.
