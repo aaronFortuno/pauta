@@ -67,7 +67,7 @@
   }
 
   function render() {
-    const { page, count, partial, layers, weight, colors, dash, code } = Pauta.layout(state);
+    const { page, count, partial, layers, weight, colors, dash, code } = Pauta.layout(state, t('recoveryCode'));
     if (paper?.width !== page.width || paper.height !== page.height) {
       paper = page;
       sheet.setAttribute('viewBox', `0 0 ${page.width} ${page.height}`);
@@ -137,7 +137,7 @@
 
   function presetState(name) {
     const { size, landscape, printCode } = state;
-    return { ...Pauta.defaults, ...Pauta.presets[name], size, landscape, printCode };
+    return { ...Pauta.presets[name], size, landscape, printCode };
   }
 
   function renderLibrary() {
@@ -226,13 +226,22 @@
     status.textContent = t(key);
   }
 
-  async function copy(text, target) {
+  async function copy(field, target) {
     try {
-      await navigator.clipboard.writeText(text);
-      showStatus(target, 'copied');
+      await navigator.clipboard.writeText(field.value);
     } catch {
-      showStatus(target, 'copyFailed');
+      const previousFocus = document.activeElement;
+      field.focus({ preventScroll: true });
+      field.select();
+      let copied = false;
+      try { copied = document.execCommand('copy'); } catch {}
+      if (!copied) {
+        showStatus(target, 'copyFailed');
+        return;
+      }
+      previousFocus?.focus({ preventScroll: true });
     }
+    showStatus(target, 'copied');
   }
 
   for (const [value, name] of Object.entries(PautaLanguages)) {
@@ -353,12 +362,12 @@
     loadLibrary();
     renderLibrary();
   });
-  $('#copy-code').addEventListener('click', () => copy(Pauta.encode(state), '#code-status'));
-  $('#copy-lightning').addEventListener('click', () => copy($('#lightning-address').textContent, '#lightning-status'));
+  $('#copy-code').addEventListener('click', () => copy($('#layout-code'), '#code-status'));
+  $('#copy-lightning').addEventListener('click', () => copy($('#lightning-address'), '#lightning-status'));
   $('#restore-form').addEventListener('submit', event => {
     event.preventDefault();
     const field = $('#restore-code');
-    const restored = Pauta.decode(field.value.trim().replace(/^Pauta\.\s*/i, ''));
+    const restored = Pauta.decode(field.value.trim().replace(/^Pauta\.\s*(?:·[^:]*:\s*)?/i, ''));
     field.setAttribute('aria-invalid', String(!restored));
     if (!restored) {
       showStatus('#code-status', 'invalidCode');
@@ -432,7 +441,7 @@
   }
 
   $('#download').addEventListener('click', () => {
-    downloadFile(new Blob([Pauta.pdf(state)], { type: 'application/pdf' }),
+    downloadFile(new Blob([Pauta.pdf(state, t('recoveryCode'))], { type: 'application/pdf' }),
       `pauta-${paper.name.toLowerCase()}${state.landscape ? '-landscape' : ''}.pdf`);
     trackPdfDownload();
   });

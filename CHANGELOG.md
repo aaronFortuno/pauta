@@ -1,5 +1,11 @@
 # Canvis
 
+## 1.2.4 · 2026-11-09
+
+- Pauta inicial de 16 mm amb traç de 0,8 mm, guies laterals i codi de recuperació activat.
+- El codi s’imprimeix identificat i 2 mm més amunt. Es pot copiar o enganxar la línia sencera per recuperar el full.
+- Còpia del codi compatible amb més navegadors i exportació vectorial amb traços agrupats per reduir la mida del PDF.
+
 ## 1.2.3 · 2026-11-06
 
 - Més espai per al full, amb controls de zoom i informació del paper superposats a la previsualització.

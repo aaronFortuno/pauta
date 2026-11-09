@@ -1,16 +1,16 @@
 // Shared geometry for the preview, browser print and vector PDF. Units are millimetres.
 const Pauta = (() => {
   const sizes = [{ name: 'A4', width: 210, height: 297 }, { name: 'A5', width: 148, height: 210 }];
-  const defaults = {
+  const presetDefaults = {
     type: 1, spacing: 12, weight: 0.5, body: 4, upper: 6, lower: 6,
     left: 25, right: 25, top: 30, bottom: 30, guideLeft: 0, guideRight: 0, printCode: 0,
     size: 0, landscape: 0, dashed: 0, color: '#000000',
   };
   const presets = {
-    wide: { spacing: 19 },
-    narrow: { spacing: 11 },
-    middle: { type: 2, body: 5, spacing: 7, weight: 0.3, color: '#505050' },
-    early: { type: 4, body: 5, upper: 7, lower: 7, spacing: 9, weight: 0.3, color: '#505050' },
+    wide: { ...presetDefaults, spacing: 19 },
+    narrow: { ...presetDefaults, spacing: 11 },
+    middle: { ...presetDefaults, type: 2, body: 5, spacing: 7, weight: 0.3, color: '#505050' },
+    early: { ...presetDefaults, type: 4, body: 5, upper: 7, lower: 7, spacing: 9, weight: 0.3, color: '#505050' },
   };
   const fields = {
     type: [1, 4, 1],
@@ -74,7 +74,7 @@ const Pauta = (() => {
     if (!digits || digits.length > (version === 'P1' ? 14 : 20) || [...digits].some(digit => !alphabet.includes(digit))) return null;
     if (checksum(digits) !== code.at(-1)) return null;
     let packed = [...digits].reduce((acc, digit) => acc * 32n + BigInt(alphabet.indexOf(digit)), 0n);
-    const settings = { ...defaults };
+    const settings = { ...presetDefaults };
     if (version === 'P1') settings.color = legacyInk;
     for (const field of version === 'P1' ? legacySchema : schema) {
       const size = BigInt(field.size);
@@ -84,7 +84,10 @@ const Pauta = (() => {
     return packed === 0n ? settings : null;
   }
 
+  const defaults = decode('P2-VYTS-Z0W3-TBTM-Y');
   const dashPattern = [2.2, 1.3];
+  const footerInset = 9;
+  const footerSize = 2.4;
 
   function paper(settings) {
     const { name, width, height } = sizes[settings.size];
@@ -95,7 +98,7 @@ const Pauta = (() => {
     return color.slice(1).match(/../g).map(part => parseInt(part, 16));
   }
 
-  function layout(settings) {
+  function layout(settings, recoveryLabel = 'Codi de recuperació') {
     const page = paper(settings);
     const { type, weight, body, upper, lower, spacing } = settings;
     const colors = {
@@ -109,7 +112,7 @@ const Pauta = (() => {
     const offsets = [[], [0], [0, body], [0, upper, upper + body], [0, upper, upper + body, upper + body + lower]][type];
     const groupHeight = offsets.at(-1);
     const top = settings.top;
-    const bottom = page.height - Math.max(settings.bottom, settings.printCode ? 10 : 0);
+    const bottom = page.height - Math.max(settings.bottom, settings.printCode ? footerInset + 4 : 0);
     const left = settings.left;
     const right = page.width - settings.right;
     const stride = groupHeight + spacing;
@@ -136,12 +139,18 @@ const Pauta = (() => {
       const x = Math.min(right, page.width - weight / 2);
       layers.margins.push([x, top, x, bottom]);
     }
-    const code = settings.printCode ? { text: 'Pauta. ' + encode(settings), x: Math.max(left, 7), y: page.height - 7, size: 2.4 } : null;
+    let code = null;
+    if (settings.printCode) {
+      const text = 'Pauta. · ' + recoveryLabel + ': ' + encode(settings);
+      const textWidth = text.length * footerSize * 0.6; // Courier has a fixed 0.6 em advance.
+      const x = Math.max(7, Math.min(left, page.width - 7 - textWidth));
+      code = { text, x, y: page.height - footerInset, size: footerSize };
+    }
     return { page, count, partial, layers, weight, colors, dash, code };
   }
 
-  function pdf(settings) {
-    const { page, layers, weight, colors, dash, code } = layout(settings);
+  function pdf(settings, recoveryLabel) {
+    const { page, layers, weight, colors, dash, code } = layout(settings, recoveryLabel);
     const pt = mm => (mm * 72 / 25.4).toFixed(5);
     const rgb = color => colorChannels(color).map(channel => (channel / 255).toFixed(5)).join(' ');
     const commands = [pt(weight) + ' w'];
@@ -150,11 +159,14 @@ const Pauta = (() => {
       commands.push(rgb(colors[name]) + ' RG');
       if (dash.length) commands.push(name === 'margins' ? '[] 0 d' : `[${dash.map(pt).join(' ')}] 0 d`);
       for (const [x1, y1, x2, y2] of segments) {
-        commands.push(`${pt(x1)} ${pt(page.height - y1)} m ${pt(x2)} ${pt(page.height - y2)} l S`);
+        commands.push(`${pt(x1)} ${pt(page.height - y1)} m ${pt(x2)} ${pt(page.height - y2)} l`);
       }
+      commands.push('S');
     }
     if (code) {
-      commands.push(`${rgb(colors.code)} rg BT /F1 ${pt(code.size)} Tf ${pt(code.x)} ${pt(page.height - code.y)} Td (${code.text}) Tj ET`);
+      // The footer uses WinAnsi characters. Octal escapes keep PDF byte offsets exact.
+      const text = code.text.replace(/[^ -~]|[()\\]/g, char => '\\' + char.charCodeAt(0).toString(8).padStart(3, '0'));
+      commands.push(`${rgb(colors.code)} rg BT /F1 ${pt(code.size)} Tf ${pt(code.x)} ${pt(page.height - code.y)} Td (${text}) Tj ET`);
     }
     const stream = commands.join('\n') + '\n';
     const resources = code ? '/Font << /F1 5 0 R >>' : '';
@@ -164,7 +176,7 @@ const Pauta = (() => {
       `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pt(page.width)} ${pt(page.height)}] /Resources << ${resources} >> /Contents 4 0 R >>`,
       `<< /Length ${stream.length} >>\nstream\n${stream}endstream`,
     ];
-    if (code) objects.push('<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>');
+    if (code) objects.push('<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>');
 
     // The document uses ASCII, so character offsets also count bytes.
     let document = '%PDF-1.4\n';

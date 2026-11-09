@@ -307,7 +307,14 @@ input[type="checkbox"] { width: 1rem; height: 1rem; margin: 0; accent-color: var
   border-radius: .38rem;
   background: var(--bg);
 }
-.current-code output, .current-code code { font: 600 .76rem/1.45 ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
+.current-code input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: 600 .76rem/1.45 ui-monospace, Consolas, monospace;
+}
 #restore-form label { display: block; margin-bottom: .25rem; font-size: .77rem; }
 .restore-row, .actions { display: flex; gap: .4rem; }
 .restore-row input { width: 100%; min-width: 0; border: 1px solid var(--border); border-radius: .38rem; padding: .32rem .45rem; font: .78rem ui-monospace, Consolas, monospace; }
@@ -490,8 +497,8 @@ dialog[open]::backdrop { opacity: 1; }
   :root { --motion-duration: 0ms; }
 }
 @media print {
-  html, body { margin: 0; padding: 0; background: white; }
+  :root, body { margin: 0; padding: 0; background: none; }
   .site-header, .site-footer, .settings, .preview-overlay, .project-promo, dialog { display: none !important; }
   .app-shell, .workspace, .preview, .stage, .canvas { display: contents; }
-  #sheet { position: absolute; inset: 0 auto auto 0; width: var(--paper-width, 210mm); height: var(--paper-height, 297mm); box-shadow: none; print-color-adjust: exact; }
+  #sheet { position: absolute; inset: 0 auto auto 0; width: var(--paper-width, 210mm); height: var(--paper-height, 297mm); background: none; box-shadow: none; print-color-adjust: exact; }
 }

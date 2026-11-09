@@ -150,14 +150,14 @@
             <div class="section-content code-controls">
               <p class="hint" data-i18n="codeHelp">El codi permet recuperar els ajustos d’un full imprès.</p>
               <div class="current-code">
-                <output id="layout-code"></output>
+                <input type="text" id="layout-code" data-aria="recoveryCode" aria-label="Codi de recuperació" readonly>
                 <button type="button" class="button quiet icon-only" id="copy-code" data-aria="copy" data-title="copy"><span data-icon="copy"></span></button>
               </div>
-              <label class="checkbox"><input type="checkbox" data-field="printCode"><span data-i18n="printCode">Imprimeix el codi al peu</span></label>
+              <label class="checkbox"><input type="checkbox" data-field="printCode" checked><span data-i18n="printCode">Imprimeix el codi de recuperació</span></label>
               <form id="restore-form">
                 <label for="restore-code" data-i18n="restoreLabel">Recupera un full amb el seu codi</label>
                 <div class="restore-row">
-                  <input id="restore-code" type="text" placeholder="P2-…" spellcheck="false" autocomplete="off" autocapitalize="characters" maxlength="40" aria-describedby="code-status" required>
+                  <input id="restore-code" type="text" placeholder="P2-…" spellcheck="false" autocomplete="off" autocapitalize="characters" maxlength="100" aria-describedby="code-status" required>
                   <button type="submit" class="button secondary" data-i18n="restore">Recupera</button>
                 </div>
               </form>
@@ -205,7 +205,7 @@
         </a>
       </div>
       <nav class="footer-tools" data-aria="project">
-        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.2.3</button>
+        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.2.4</button>
         <button type="button" class="button quiet" data-dialog="license" data-aria="license" data-title="license"><span data-icon="book-open"></span><span class="footer-label" data-i18n="license">Llicència</span></button>
         <a class="button quiet" href="https://github.com/aaronFortuno/pauta" target="_blank" rel="noopener noreferrer" data-aria="repo" data-title="repo"><span data-icon="git-commit-horizontal"></span><span class="footer-label" data-i18n="repo">Repositori</span></a>
         <button type="button" class="button quiet" data-dialog="v4v" aria-label="Value for Value" title="Value for Value"><span data-icon="heart"></span><span class="footer-label">V4V</span></button>
@@ -226,7 +226,9 @@
   <dialog id="changelog" aria-labelledby="changelog-title">
     <div class="dialog-heading"><h2 id="changelog-title" data-i18n="changelog">Canvis</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
     <div class="dialog-content">
-      <div class="release"><strong>1.2.3</strong><time datetime="2026-11-06"></time></div>
+      <div class="release"><strong>1.2.4</strong><time datetime="2026-11-09"></time></div>
+      <p data-i18n="release124">Nova pauta inicial de 16 mm amb guies laterals. El codi de recuperació s’imprimeix més amunt i el botó de còpia torna a funcionar.</p>
+      <div class="release previous-release"><strong>1.2.3</strong><time datetime="2026-11-06"></time></div>
       <p data-i18n="release123">Més espai per al full, amb el zoom i les mides sobre la previsualització. Un sol botó per descarregar el PDF i la signatura d’ortogra.fi al peu.</p>
       <div class="release previous-release"><strong>1.2.2</strong><time datetime="2026-11-06"></time></div>
       <p data-i18n="release122">Umami compta les visites i les opcions de pauta triades en descarregar el PDF o imprimir.</p>
@@ -265,9 +267,9 @@
         <a class="lightning-qr" href="lightning:LNURL1DP68GURN8GHJ7AMPD3KX2AR0VEEKZAR0WD5XJTNRDAKJ7TNHV4KXCTTTDEHHWM30D3H82UNVWQHKZUR5WDMKJMFEXQESLJTDDS" data-aria="openLightning"><img src="./lightning-qr.svg" width="112" height="112" alt=""></a>
         <div>
           <p data-i18n="v4v">Si Pauta et resulta útil, pots donar-hi suport amb un microdonatiu voluntari per Lightning. Compartir-la o proposar millores també ajuda.</p>
-          <strong class="lightning-label">Lightning Network</strong>
+          <strong class="lightning-label" id="lightning-label">Lightning Network</strong>
           <div class="current-code lightning-address">
-            <code id="lightning-address">aptswim903@walletofsatoshi.com</code>
+            <input type="text" id="lightning-address" value="aptswim903@walletofsatoshi.com" aria-labelledby="lightning-label" readonly>
             <button type="button" class="button quiet icon-only" id="copy-lightning" data-aria="copyLightning" data-title="copyLightning"><span data-icon="copy"></span></button>
           </div>
           <p class="hint" id="lightning-status" role="status"></p>

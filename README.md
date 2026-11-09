@@ -7,8 +7,8 @@ Generador de paper pautat A4 i A5 per escriure i practicar cal·ligrafia. Obre `
 - Al menú **Plantilles**, desa el full actual amb un nom i amaga o recupera les plantilles inicials. Les plantilles pròpies i les preferències de galeria es desen al navegador. Pots descarregar les plantilles pròpies en JSON i importar-les al mateix navegador o en un altre. La importació afegeix les plantilles noves i omet les coincidències exactes.
 - Paper A4 o A5 en vertical o horitzontal, amb línies contínues o discontínues i color configurable.
 - Marges independents i guies verticals opcionals als dos costats.
-- Codi `P2` opcional al peu. Introdueix-lo al quadre **Codi del full** per recuperar la configuració del paper. També s’accepten els codis `P1`.
-- Pauta simple amb 12 mm de separació inicial. La primera línia comença al marge superior i al final es mostren les línies que caben dins del marge inferior.
+- Codi de recuperació activat al peu per defecte. Al menú **Codi del full**, pots copiar-lo, desactivar-lo o enganxar el codi o la línia sencera per recuperar la configuració. També s’accepten els codis `P1`.
+- Pauta inicial `P2-VYTS-Z0W3-TBTM-Y`, amb línies simples cada 16 mm, traç de 0,8 mm i guies laterals. La primera línia comença al marge superior i al final es mostren les línies que caben dins del marge inferior.
 - Fes zoom amb els botons de la previsualització o amb la roda del ratolí i arrossega el full per moure’l. Descarrega el PDF i imprimeix-lo al 100 % per conservar-ne les mesures. També pots imprimir el full directament des del menú d’impressió del navegador.
 
 El web és a [pauta.ortogra.fi](https://pauta.ortogra.fi/). GitHub Pages publica `dist/` amb el flux de GitHub Actions quan canvia el web a `main`. L’avís de Pentagrama es mostra un segon després de carregar la pàgina i s’amaga al cap de dotze segons. El temporitzador es pausa quan el punter o el focus són dins l’avís.
