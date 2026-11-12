@@ -1,5 +1,9 @@
 # Canvis
 
+## 1.2.5 · 2026-11-12
+
+- Umami compta l’aplicació i el desament de plantilles, els canvis manuals d’ajustos, les recuperacions per codi i l’obertura del diàleg d’impressió.
+
 ## 1.2.4 · 2026-11-09
 
 - Pauta inicial de 16 mm amb traç de 0,8 mm, guies laterals i codi de recuperació activat.

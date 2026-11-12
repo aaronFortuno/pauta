@@ -75,14 +75,14 @@
               <ul id="saved-templates" class="template-list"></ul>
             </div>
           </details>
-          <details class="settings-section" name="pauta-settings">
+          <details class="settings-section" name="pauta-settings" data-layout-group="paper">
             <summary><span data-icon="rectangle-vertical"></span><span data-i18n="paper">Paper</span><span class="disclosure" data-icon="chevron-down"></span></summary>
             <div class="section-content paper-options">
               <label><span data-i18n="size">Mida</span><select data-field="size"><option value="0">A4</option><option value="1">A5</option></select></label>
               <label><span data-i18n="orientation">Orientació</span><select data-field="landscape"><option value="0" data-i18n="portrait">Vertical</option><option value="1" data-i18n="landscape">Horitzontal</option></select></label>
             </div>
           </details>
-          <details class="settings-section" name="pauta-settings" open>
+          <details class="settings-section" name="pauta-settings" data-layout-group="ruling" open>
             <summary><span data-icon="settings-2"></span><span data-i18n="ruling">Pauta</span><span class="disclosure" data-icon="chevron-down"></span></summary>
             <div class="section-content">
               <fieldset class="type">
@@ -128,7 +128,7 @@
             </div>
           </details>
 
-          <details class="settings-section" name="pauta-settings">
+          <details class="settings-section" name="pauta-settings" data-layout-group="margins">
             <summary><span data-icon="rectangle-vertical"></span><span data-i18n="margins">Marges</span><span class="disclosure" data-icon="chevron-down"></span></summary>
             <div class="section-content">
               <div class="margin-grid">
@@ -145,7 +145,7 @@
             </div>
           </details>
 
-          <details class="settings-section" name="pauta-settings">
+          <details class="settings-section" name="pauta-settings" data-layout-group="recovery-code">
             <summary><span data-icon="code"></span><span data-i18n="code">Codi del full</span><span class="disclosure" data-icon="chevron-down"></span></summary>
             <div class="section-content code-controls">
               <p class="hint" data-i18n="codeHelp">El codi permet recuperar els ajustos d’un full imprès.</p>
@@ -205,7 +205,7 @@
         </a>
       </div>
       <nav class="footer-tools" data-aria="project">
-        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.2.4</button>
+        <button type="button" class="button quiet version-button" data-dialog="changelog" data-title="changelog">1.2.5</button>
         <button type="button" class="button quiet" data-dialog="license" data-aria="license" data-title="license"><span data-icon="book-open"></span><span class="footer-label" data-i18n="license">Llicència</span></button>
         <a class="button quiet" href="https://github.com/aaronFortuno/pauta" target="_blank" rel="noopener noreferrer" data-aria="repo" data-title="repo"><span data-icon="git-commit-horizontal"></span><span class="footer-label" data-i18n="repo">Repositori</span></a>
         <button type="button" class="button quiet" data-dialog="v4v" aria-label="Value for Value" title="Value for Value"><span data-icon="heart"></span><span class="footer-label">V4V</span></button>
@@ -226,7 +226,9 @@
   <dialog id="changelog" aria-labelledby="changelog-title">
     <div class="dialog-heading"><h2 id="changelog-title" data-i18n="changelog">Canvis</h2><button type="button" class="button quiet icon-only" data-close data-aria="close"><span data-icon="x"></span></button></div>
     <div class="dialog-content">
-      <div class="release"><strong>1.2.4</strong><time datetime="2026-11-09"></time></div>
+      <div class="release"><strong>1.2.5</strong><time datetime="2026-11-12"></time></div>
+      <p data-i18n="release125">Umami compta l’ús de les plantilles, els canvis d’ajustos, les recuperacions de fulls i l’obertura del diàleg d’impressió.</p>
+      <div class="release previous-release"><strong>1.2.4</strong><time datetime="2026-11-09"></time></div>
       <p data-i18n="release124">Nova pauta inicial de 16 mm amb guies laterals. El codi de recuperació s’imprimeix més amunt i el botó de còpia torna a funcionar.</p>
       <div class="release previous-release"><strong>1.2.3</strong><time datetime="2026-11-06"></time></div>
       <p data-i18n="release123">Més espai per al full, amb el zoom i les mides sobre la previsualització. Un sol botó per descarregar el PDF i la signatura d’ortogra.fi al peu.</p>

@@ -13,6 +13,17 @@ Generador de paper pautat A4 i A5 per escriure i practicar cal·ligrafia. Obre `
 
 El web és a [pauta.ortogra.fi](https://pauta.ortogra.fi/). GitHub Pages publica `dist/` amb el flux de GitHub Actions quan canvia el web a `main`. L’avís de Pentagrama es mostra un segon després de carregar la pàgina i s’amaga al cap de dotze segons. El temporitzador es pausa quan el punter o el focus són dins l’avís.
 
-A pauta.ortogra.fi, una instància pròpia d’Umami allotjada a Umbrel compta les visites i registra un esdeveniment `sheet-output` quan es prem el botó de descarregar el PDF. El tracker hi accedeix per HTTPS a través de Tailscale Funnel. L’esdeveniment recull el format, l’orientació, el nombre de línies de la pauta, l’espaiat, el gruix, el tipus de traç i si s’han activat les guies laterals o el codi imprès. Els noms de les plantilles, els codis i els fitxers es queden al dispositiu.
+A pauta.ortogra.fi, una instància pròpia d’Umami allotjada a Umbrel compta les visites. El tracker hi accedeix per HTTPS a través de Tailscale Funnel. El tauler **Events** mostra les accions següents.
+
+| Esdeveniment | Quan es compta |
+| --- | --- |
+| `sheet-output` | En iniciar la descàrrega del PDF. Inclou el format, l’orientació, el nombre de línies de la pauta, l’espaiat, el gruix, el tipus de traç i si s’han activat les guies laterals o el codi imprès. |
+| `template-apply` | En aplicar una plantilla. La propietat `template` indica quina plantilla de la galeria s’ha aplicat o val `personal` per a una plantilla pròpia. |
+| `layout-change` | Quan es confirma el primer canvi manual de cada grup d’ajustos després de carregar la pàgina. La propietat `group` pot ser `paper`, `ruling`, `margins` o `recovery-code`. |
+| `code-restore` | En recuperar correctament un full a partir del seu codi. |
+| `template-save` | En desar correctament una plantilla pròpia. |
+| `print-open` | Quan el navegador avisa que prepara la impressió o en mostra la previsualització. |
+
+Els noms de les plantilles, els codis i els fitxers es queden al dispositiu.
 
 Projecte amb llicència [GNU GPL-3.0](LICENSE). Les [icones Lucide](https://lucide.dev/) es distribueixen sota les seves [llicències ISC i MIT](dist/lucide-LICENSE.txt).

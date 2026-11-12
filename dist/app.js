@@ -2,6 +2,8 @@
   const $ = selector => document.querySelector(selector);
   const $$ = selector => [...document.querySelectorAll(selector)];
   const state = { ...Pauta.defaults };
+  const committedSettings = { ...state };
+  const changedGroups = new Set();
   const settings = $$('[data-field], [name="type"]');
   const presetButtons = $$('[data-preset]');
   const hidePresetButtons = $$('[data-hide-preset]');
@@ -14,6 +16,7 @@
   let zoom = 1;
   let paper;
   let drag;
+  let printOpen = false;
   let library = { hidden: [], saved: [] };
 
   function icon(name) {
@@ -131,6 +134,7 @@
 
   function applyState(next) {
     Object.assign(state, next);
+    Object.assign(committedSettings, state);
     settings.forEach(syncField);
     render();
   }
@@ -166,7 +170,10 @@
       const spacing = new Intl.NumberFormat(locale).format(settings.spacing);
       info.textContent = `${size} · ${t(['single', 'double', 'triple', 'quad'][settings.type - 1])} · ${spacing} mm`;
       use.append(name, info);
-      use.addEventListener('click', () => applyState(settings));
+      use.addEventListener('click', () => {
+        applyState(settings);
+        track('template-apply', { template: 'personal' });
+      });
       const remove = document.createElement('button');
       remove.type = 'button';
       remove.className = 'button quiet template-remove';
@@ -285,8 +292,8 @@
       }
       render();
     });
-    if (input.type === 'number') {
-      input.addEventListener('change', () => {
+    input.addEventListener('change', () => {
+      if (input.type === 'number') {
         if (input.value !== '') {
           const steps = Math.round((Math.min(max, Math.max(min, input.valueAsNumber)) - min) / step);
           state[key] = Number((min + steps * step).toFixed(2));
@@ -295,14 +302,24 @@
           if (peer.dataset.field === key) syncField(peer);
         }
         render();
-      });
-    }
+      }
+      if (state[key] === committedSettings[key]) return;
+      committedSettings[key] = state[key];
+      const group = input.closest('[data-layout-group]')?.dataset.layoutGroup;
+      if (!group || changedGroups.has(group)) return;
+      changedGroups.add(group);
+      track('layout-change', { group });
+    });
     syncField(input);
   }
 
   $('#reset').addEventListener('click', () => applyState(Pauta.defaults));
   for (const button of presetButtons) {
-    button.addEventListener('click', () => applyState(presetState(button.dataset.preset)));
+    button.addEventListener('click', () => {
+      const { preset } = button.dataset;
+      applyState(presetState(preset));
+      track('template-apply', { template: preset });
+    });
   }
   for (const button of hidePresetButtons) {
     button.addEventListener('click', async () => {
@@ -329,7 +346,10 @@
       if (templates.length === current.saved.length) throw new Error('templateDuplicate');
       return { ...current, saved: templates };
     }, 'templateSaved');
-    if (saved && field.value.trim() === name) field.value = '';
+    if (saved) {
+      if (field.value.trim() === name) field.value = '';
+      track('template-save');
+    }
   });
   const templateFile = $('#template-file');
   $('#import-templates').addEventListener('click', () => templateFile.click());
@@ -375,6 +395,7 @@
     }
     applyState(restored);
     showStatus('#code-status', 'restored');
+    track('code-restore');
   });
   $('#restore-code').addEventListener('input', event => {
     event.target.removeAttribute('aria-invalid');
@@ -421,30 +442,40 @@
     setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }
 
-  async function trackPdfDownload() {
+  async function track(name, data) {
+    if (!window.umami && document.readyState !== 'complete') {
+      window.addEventListener('load', () => track(name, data), { once: true });
+      return;
+    }
     try {
-      await window.umami?.track('sheet-output', {
-        method: 'pdf',
-        paper: paper.name,
-        orientation: state.landscape ? 'landscape' : 'portrait',
-        ruling_lines: state.type,
-        spacing_mm: state.spacing,
-        weight_mm: state.weight,
-        line_style: state.dashed ? 'dashed' : 'solid',
-        left_guide: Boolean(state.guideLeft),
-        right_guide: Boolean(state.guideRight),
-        show_code: Boolean(state.printCode),
-      });
+      await window.umami?.track(name, data);
     } catch {
-      // Downloads work even when analytics is unavailable.
+      // The editor works even when analytics is unavailable.
     }
   }
 
   $('#download').addEventListener('click', () => {
     downloadFile(new Blob([Pauta.pdf(state, t('recoveryCode'))], { type: 'application/pdf' }),
       `pauta-${paper.name.toLowerCase()}${state.landscape ? '-landscape' : ''}.pdf`);
-    trackPdfDownload();
+    track('sheet-output', {
+      method: 'pdf',
+      paper: paper.name,
+      orientation: state.landscape ? 'landscape' : 'portrait',
+      ruling_lines: state.type,
+      spacing_mm: state.spacing,
+      weight_mm: state.weight,
+      line_style: state.dashed ? 'dashed' : 'solid',
+      left_guide: Boolean(state.guideLeft),
+      right_guide: Boolean(state.guideRight),
+      show_code: Boolean(state.printCode),
+    });
   });
+  window.addEventListener('beforeprint', () => {
+    if (printOpen) return;
+    printOpen = true;
+    track('print-open');
+  });
+  window.addEventListener('afterprint', () => { printOpen = false; });
   for (const button of $$('[data-dialog]')) {
     button.addEventListener('click', () => document.getElementById(button.dataset.dialog).showModal());
   }
